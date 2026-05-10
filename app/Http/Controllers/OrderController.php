@@ -2,42 +2,72 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCustomerDataRequest;
+use App\Http\Requests\StoreOrderRequest;
+use App\Http\Requests\StorePaymentRequest;
+use App\Models\Product;
+use App\Models\Transaction;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function saveOrder(Request $request, $slug)
+    protected $orderService;
+
+    public function __construct(OrderService $orderService)
     {
-        // Logic to save the order based on the product slug
+        $this->orderService = $orderService;
+    }
+
+    public function saveOrder(StoreOrderRequest $request, Product $product)
+    {
+        $validated = $request->validated();
+        $validated['product_id'] = $product->id;
+        $this->orderService->beginOrder($validated);
+
+        return redirect()->route('front.booking', $product->slug);
+        
     }
 
     public function booking()
     {
-        // Logic to display the booking page
+        $data = $this->orderService->getOrderDetails();
+        return view('order.order', $data);
     }
 
     public function customerData()
     {
-        // Logic to display the customer data form
+        $data = $this->orderService->getOrderDetails();
+        return view('order.customer_data', $data);
     }
 
-    public function saveCustomerData(Request $request)
+    public function saveCustomerData(StoreCustomerDataRequest $request)
     {
-        // Logic to save the customer data
+        $validated = $request->validated();
+        $this->orderService->updateCustomerData($validated);
+        return redirect()->route('front.payment');
     }
 
     public function payment()
     {
-        // Logic to display the payment page
+        $data = $this->orderService->getOrderDetails();
+        return view('order.payment', $data);
     }
 
-    public function paymentConfirm(Request $request)
+    public function paymentConfirm(StorePaymentRequest $request)
     {
-        // Logic to confirm the payment
+        $validated = $request->validated();
+        $productTransactionId = $this->orderService->paymentConfirm($validated);
+
+        if ($productTransactionId) {
+            return redirect()->route('front.order_finished', $productTransactionId);
+        }
+
+        return redirect()->route('frontindex')->withErrors(['error' => 'Payment failed. Please try again.']);
     }
 
-    public function orderFinished($id)
+    public function orderFinished(Transaction $transaction)
     {
-        // Logic to display the order finished page based on the transaction ID
+        dd($transaction);
     }
 }
