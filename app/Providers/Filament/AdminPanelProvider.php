@@ -27,9 +27,24 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->authGuard('admin')
             ->login()
+            ->registration(\App\Filament\Pages\Auth\AdminRegister::class)
             ->colors([
                 'primary' => Color::Amber,
+            ])
+            ->sidebarCollapsibleOnDesktop()
+            ->sidebarFullyCollapsibleOnDesktop()
+            ->navigationGroups([
+                'Management',
+                'Catalog',
+                'Orders',
+            ])
+            ->userMenuItems([
+                'profile' => \Filament\Navigation\MenuItem::make()
+                    ->label('Edit Profile')
+                    ->url(fn () => \App\Filament\Resources\Users\UserResource::getUrl('edit', ['record' => auth()->id()]))
+                    ->icon('heroicon-o-user-circle'),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -38,6 +53,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
+                \App\Filament\Widgets\StatsOverviewWidget::class,
+                \App\Filament\Widgets\TransactionChartWidget::class,
+                \App\Filament\Widgets\ActiveUsersWidget::class,
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])

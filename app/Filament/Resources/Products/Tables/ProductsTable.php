@@ -24,7 +24,8 @@ class ProductsTable
                     ->sortable(),
 
                 TextColumn::make('category.name'),
-                ImageColumn::make('thumbnail'),
+                ImageColumn::make('thumbnail')
+                    ->disk('public'),
 
                 IconColumn::make('is_popular')
                     ->boolean()

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -20,8 +21,13 @@ class Product extends Model
         'price',
         'stock',
         'is_popular',
-        'category_id', // Foreign Key
-        'brand_id', // Foreign Key
+        'colors',
+        'category_id',
+        'brand_id',
+    ];
+
+    protected $casts = [
+        'colors' => 'array',
     ];
 
     public function category(): BelongsTo {
@@ -36,6 +42,18 @@ class Product extends Model
 
     public function setNameAttribute($value) {
         $this->attributes['name'] = $value;
-        $this->attributes['slug'] = Str::slug($value); // otomatis buat slug dari name
+        $this->attributes['slug'] = Str::slug($value);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class);
+    }
+
+    public function relatedProducts()
+    {
+        return $this->hasMany(Product::class, 'category_id', 'category_id')
+                    ->where('id', '!=', $this->id)
+                    ->limit(4);
     }
 }
