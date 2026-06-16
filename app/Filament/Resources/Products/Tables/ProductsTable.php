@@ -32,7 +32,7 @@ class ProductsTable
                     ->trueColor('success')
                     ->falseColor('danger')
                     ->trueIcon('heroicon-o-check')
-                    ->falseIcon('heroicon-o-x')
+                    ->falseIcon('heroicon-o-x-mark')
                     ->label('Popular'),
                    
             ])
