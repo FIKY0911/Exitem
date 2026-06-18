@@ -1,5 +1,5 @@
 <div>
-    <livewire:components.navbar :dark="true" />
+    <livewire:components.navbar :dark="false" />
 
     <main class="auth-page py-20">
         <div class="auth-container">

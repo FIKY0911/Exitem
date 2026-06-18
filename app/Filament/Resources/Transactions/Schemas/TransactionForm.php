@@ -76,7 +76,15 @@ class TransactionForm
                     
                     Step::make('Customer Information')
                         ->schema([
+                            Select::make('user_id')
+                                ->label('User Account')
+                                ->relationship('user', 'name')
+                                ->searchable()
+                                ->preload()
+                                ->helperText('Connect this transaction to a registered user account.'),
+
                             TextInput::make('name')
+                                ->label('Billing Name')
                                 ->required()
                                 ->maxLength(255),
 
@@ -86,6 +94,7 @@ class TransactionForm
 
                             TextInput::make('email')
                                 ->required()
+                                ->email()
                                 ->maxLength(255),
 
                             TextInput::make('address')

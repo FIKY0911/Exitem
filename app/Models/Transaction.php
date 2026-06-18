@@ -12,6 +12,7 @@ class Transaction extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'name',
         'phone',
         'email',
@@ -26,6 +27,10 @@ class Transaction extends Model
         'product_id',
         'proof',
     ];
+
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class);
+    }
 
     public function product(): BelongsTo {
         return $this->belongsTo(Product::class);

@@ -27,6 +27,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        \App\Models\Product::observe(\App\Observers\GlobalObserver::class);
+        \App\Models\Category::observe(\App\Observers\GlobalObserver::class);
+        \App\Models\Brand::observe(\App\Observers\GlobalObserver::class);
+        \App\Models\Banner::observe(\App\Observers\GlobalObserver::class);
     }
 }

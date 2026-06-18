@@ -15,8 +15,8 @@ class CheckAdminRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || auth()->user()->email !== 'admin@admin.com') {
-            abort(403, 'Unauthorized access. Only super admin (admin@admin.com) is allowed.');
+        if (!auth()->check() || !auth()->user()->isAdmin()) {
+            abort(403, 'Unauthorized access. Only administrators are allowed.');
         }
 
         return $next($request);

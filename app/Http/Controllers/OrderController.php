@@ -23,10 +23,10 @@ class OrderController extends Controller
     {
         $validated = $request->validated();
         $validated['product_id'] = $product->id;
+        $validated['quantity'] = $validated['product_quantity']; // Sync with Service
         $this->orderService->beginOrder($validated);
 
         return redirect()->route('front.booking', $product->slug);
-        
     }
 
     public function booking()

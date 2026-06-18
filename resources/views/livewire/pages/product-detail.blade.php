@@ -15,7 +15,7 @@
         {{-- Main Product Section --}}
         <div class="flex flex-col lg:flex-row gap-[70px] mb-16"
              x-data="{
-                activeImage: '{{ $product->images->where('is_primary', true)->first()?->url ?? $product->thumbnail }}',
+                activeImage: '{{ asset('storage/' . ($product->images->where('is_primary', true)->first()?->url ?? $product->thumbnail)) }}',
                 quantity: 1,
                 incQty() { this.quantity++ },
                 decQty() { if (this.quantity > 1) this.quantity-- }
@@ -54,12 +54,13 @@
 
                 {{-- Rating & Stock --}}
                 <div class="flex items-center gap-4">
-                    <div class="flex" style="color:#FFAD33">
+                    <div class="flex">
+                        @php $avg = $product->reviews->avg('rating') ?: 0; @endphp
                         @for($i = 1; $i <= 5; $i++)
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <svg class="w-4 h-4 {{ $i <= round($avg) ? 'text-[#FFAD33]' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                         @endfor
                     </div>
-                    <span class="text-sm" style="color:#7D8184">(150 Reviews)</span>
+                    <span class="text-sm" style="color:#7D8184">({{ $product->reviews->count() }} Reviews)</span>
                     <span class="text-sm" style="color:#00FF66">| {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}</span>
                 </div>
 
@@ -96,10 +97,10 @@
                     <div class="flex items-center border rounded-sm overflow-hidden" style="border-color:rgba(0,0,0,0.3)">
                         <button type="button" @click="decQty" title="Decrease quantity"
                                 class="w-10 h-11 text-xl font-light hover:bg-gray-100 transition-colors">−</button>
-                        <input type="number" x-model="quantity" min="1"
+                        <input type="number" x-model="quantity" min="1" :max="{{ $product->stock }}"
                                class="w-20 h-11 text-center font-semibold text-base border-x focus:outline-none"
                                style="border-color:rgba(0,0,0,0.3); -webkit-appearance:none; -moz-appearance:textfield;">
-                        <button type="button" @click="incQty" title="Increase quantity"
+                        <button type="button" @click="if(quantity < {{ $product->stock }}) incQty()" title="Increase quantity"
                                 class="w-10 h-11 text-xl font-light text-white transition-colors"
                                 style="background:#DB4444">+</button>
                     </div>
@@ -109,8 +110,9 @@
                         @csrf
                         <input type="hidden" name="quantity" :value="quantity">
                         <button type="submit" title="Buy Now — proceed to checkout"
-                                style="height:44px; padding:0 28px; border-radius:4px; background:#DB4444; color:#fff; border:none; font-weight:500; cursor:pointer; white-space:nowrap;">
-                            Buy Now
+                                @if($product->stock <= 0) disabled @endif
+                                style="height:44px; padding:0 28px; border-radius:4px; background:{{ $product->stock > 0 ? '#DB4444' : '#999' }}; color:#fff; border:none; font-weight:500; cursor:{{ $product->stock > 0 ? 'pointer' : 'not-allowed' }}; white-space:nowrap;">
+                            {{ $product->stock > 0 ? 'Buy Now' : 'Out of Stock' }}
                         </button>
                     </form>
 
@@ -119,7 +121,8 @@
                         @csrf
                         <input type="hidden" name="quantity" :value="quantity">
                         <button type="submit" title="Add to Cart"
-                                style="width:44px; height:44px; border-radius:4px; border:1px solid #000; background:#fff; cursor:pointer; display:inline-flex; align-items:center; justify-content:center;">
+                                @if($product->stock <= 0) disabled @endif
+                                style="width:44px; height:44px; border-radius:4px; border:1px solid #000; background:{{ $product->stock > 0 ? '#fff' : '#eee' }}; cursor:{{ $product->stock > 0 ? 'pointer' : 'not-allowed' }}; display:inline-flex; align-items:center; justify-content:center;">
                             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                             </svg>
@@ -161,8 +164,12 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
+
+        {{-- Product Reviews Section --}}
+        <livewire:components.product-reviews :productId="$product->id" />
 
         {{-- Related Items --}}
         @if($product->relatedProducts->count())

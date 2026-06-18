@@ -24,26 +24,50 @@ class TransactionsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('product.thumbnail'),
-                
-                TextColumn::make('name')
-                    ->searchable(),
+                ImageColumn::make('product.thumbnail')
+                    ->label('Thumbnail'),
                 
                 TextColumn::make('booking_trx_id')
+                    ->label('Trx ID')
                     ->searchable(),
+
+                TextColumn::make('user.name')
+                    ->label('Account Holder')
+                    ->description(fn (Transaction $record): string => $record->user?->email ?? 'Guest')
+                    ->searchable()
+                    ->sortable(),
+                
+                TextColumn::make('name')
+                    ->label('Billing Name')
+                    ->description(fn (Transaction $record): string => "Phone: {$record->phone}")
+                    ->searchable(),
+
+                TextColumn::make('grand_total_amount')
+                    ->label('Total')
+                    ->money('IDR')
+                    ->sortable(),
 
                 IconColumn::make('is_paid')
                     ->boolean()
                     ->trueColor('success')
                     ->falseColor('danger')
-                    ->label('Payment Status'),
+                    ->label('Status'),
+
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 TrashedFilter::make(),
 
                 SelectFilter::make('product_id')
-                    ->label('product')
-                    ->relationship('product', 'name')
+                    ->label('Product')
+                    ->relationship('product', 'name'),
+
+                SelectFilter::make('user_id')
+                    ->label('Customer Account')
+                    ->relationship('user', 'name'),
             ])
             ->recordActions([
                 EditAction::make(),

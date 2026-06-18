@@ -33,9 +33,10 @@
         <nav class="hidden md:flex gap-10 py-2 text-base">
             @php
                 $navLinks = [
-                    ['route' => 'home',    'label' => 'Home'],
-                    ['route' => 'contact', 'label' => 'Contact'],
-                    ['route' => 'about',   'label' => 'About'],
+                    ['route' => 'home',     'label' => 'Home'],
+                    ['route' => 'products', 'label' => 'Products'],
+                    ['route' => 'contact',  'label' => 'Contact'],
+                    ['route' => 'about',    'label' => 'About'],
                 ];
             @endphp
             @foreach($navLinks as $link)
@@ -53,24 +54,49 @@
                           class="nav-underline"></span>
                 </a>
             @endforeach
+            @guest
             <a href="{{ route('signup') }}"
                style="font-weight:500; text-decoration:none; color:#7D8184; transition:color 0.2s;"
                onmouseover="this.style.color='{{ $dark ? '#fff' : '#000' }}'" onmouseout="this.style.color='#7D8184'">
                 Sign Up
             </a>
+            @endguest
         </nav>
 
         {{-- Right: Search + Icons --}}
         <div class="flex items-center gap-4 sm:gap-5">
 
             {{-- Desktop Search Box (ONLY visible md and above) --}}
-            <div class="hidden md:block">
+            <div class="hidden md:block relative" x-data="{ showSuggestions: @entangle('suggestions').live }">
                 <div class="search-box">
-                    <input type="text" wire:model="search" placeholder="What are you looking for?" class="{{ $dark ? 'text-white' : 'text-black' }}">
+                    <input type="text" 
+                           wire:model.live.debounce.300ms="search" 
+                           wire:keydown.enter="performSearch" 
+                           placeholder="What are you looking for?" 
+                           class="text-black placeholder-gray-500">
                     <svg class="w-5 h-5 text-[var(--text-gray)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                 </div>
+                
+                @if(count($suggestions) > 0)
+                <div class="absolute top-full mt-3 w-full bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-50 overflow-hidden border border-gray-100 py-2">
+                    @foreach($suggestions as $product)
+                    <a href="{{ route('product.detail', $product['slug']) }}" 
+                       class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition-all duration-200 group">
+                        <div class="relative w-14 h-14 shrink-0 overflow-hidden rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center">
+                            <img src="{{ $product['thumbnail'] ? asset('storage/' . $product['thumbnail']) : '/images/placeholder.jpg' }}" 
+                                 class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" 
+                                 alt="{{ $product['name'] }}">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-[15px] font-medium text-gray-900 truncate">{{ $product['name'] }}</p>
+                            <p class="text-sm font-semibold text-[var(--primary-red)] mt-0.5">Rp {{ number_format($product['price'], 0, ',', '.') }}</p>
+                        </div>
+                    </a>
+                    @endforeach
+                </div>
+                @endif
             </div>
 
             {{-- Mobile Search Icon (ONLY visible below md) --}}
@@ -145,7 +171,7 @@
                             <span class="text-[15px]">My Cancellations</span>
                         </a>
                         
-                        <a href="#" style="display: flex; align-items: center; gap: 1rem;" class="px-4 py-3 text-sm text-white hover:bg-white/10 transition-colors w-full whitespace-nowrap group">
+                        <a href="{{ route('my-reviews') }}" style="display: flex; align-items: center; gap: 1rem;" class="px-4 py-3 text-sm text-white hover:bg-white/10 transition-colors w-full whitespace-nowrap group">
                             <svg class="w-6 h-6 opacity-90 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.482-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
                             <span class="text-[15px]">My Reviews</span>
                         </a>
@@ -179,9 +205,12 @@
          style="display:none">
         <nav class="flex flex-col px-10 py-5 gap-5 text-base">
             <a href="{{ route('home') }}" class="font-medium text-[var(--primary-red)]">Home</a>
+            <a href="{{ route('products') }}" class="font-medium hover:text-[var(--primary-red)] transition-colors">Products</a>
             <a href="{{ route('contact') }}" class="font-medium hover:text-[var(--primary-red)] transition-colors">Contact</a>
             <a href="{{ route('about') }}" class="font-medium hover:text-[var(--primary-red)] transition-colors">About</a>
+            @guest
             <a href="{{ route('signup') }}" class="font-medium hover:text-[var(--primary-red)] transition-colors">Sign Up</a>
+            @endguest
         </nav>
     </div>
 
@@ -193,22 +222,43 @@
          x-transition:leave="transition ease-in duration-100"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 -translate-y-1"
-         class="md:hidden absolute w-full {{ $dark ? 'bg-black text-white' : 'bg-white' }} z-40 shadow-md border-t {{ $dark ? 'border-white/10' : 'border-gray-100' }} px-4 py-3"
+         class="md:hidden absolute w-full {{ $dark ? 'bg-black text-white' : 'bg-white' }} z-40 shadow-md border-t {{ $dark ? 'border-white/10' : 'border-gray-100' }}"
          style="display:none">
-        <div class="search-box search-full w-full" @click.stop style="display: flex; align-items: center; justify-content: space-between;">
-            <svg class="w-5 h-5 text-[var(--text-gray)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-            <input type="text" wire:model="search" placeholder="What are you looking for?"
-                   class="flex-1 min-w-0 bg-transparent outline-none mx-2 {{ $dark ? 'text-white placeholder:text-gray-500' : 'text-black' }}"
-                   x-ref="searchInput"
-                   x-init="$watch('searchOpen', val => val && $nextTick(() => $refs.searchInput.focus()))">
-            <button @click.stop="searchOpen = false" class="shrink-0 text-gray-400 hover:text-gray-700 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        <div class="px-4 py-3">
+            <div class="search-box search-full w-full" @click.stop style="display: flex; align-items: center; justify-content: space-between;">
+                <svg class="w-5 h-5 text-[var(--text-gray)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-            </button>
+                <input type="text" wire:model.live.debounce.300ms="search" wire:keydown.enter="performSearch" placeholder="What are you looking for?"
+                       class="flex-1 min-w-0 bg-transparent outline-none mx-2 text-black placeholder-gray-500"
+                       x-ref="searchInput"
+                       x-init="$watch('searchOpen', val => val && $nextTick(() => $refs.searchInput.focus()))">
+                <button @click.stop="searchOpen = false" class="shrink-0 text-gray-400 hover:text-gray-700 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
         </div>
+        
+        @if(count($suggestions) > 0)
+        <div class="border-t {{ $dark ? 'border-white/10' : 'border-gray-100' }} py-2">
+            @foreach($suggestions as $product)
+            <a href="{{ route('product.detail', $product['slug']) }}" 
+               class="flex items-center gap-4 px-4 py-3 {{ $dark ? 'hover:bg-white/5' : 'hover:bg-gray-50' }} transition-colors group">
+                <div class="relative w-14 h-14 shrink-0 overflow-hidden rounded-md {{ $dark ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100' }} border flex items-center justify-center">
+                    <img src="{{ $product['thumbnail'] ? asset('storage/' . $product['thumbnail']) : '/images/placeholder.jpg' }}" 
+                         class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" 
+                         alt="{{ $product['name'] }}">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-[15px] font-medium truncate {{ $dark ? 'text-white' : 'text-gray-900' }}">{{ $product['name'] }}</p>
+                    <p class="text-sm font-semibold text-[var(--primary-red)] mt-0.5">Rp {{ number_format($product['price'], 0, ',', '.') }}</p>
+                </div>
+            </a>
+            @endforeach
+        </div>
+        @endif
     </div>
     {{-- Invisible overlay to close search when clicking outside --}}
     <div x-cloak x-show="searchOpen" @click="searchOpen = false"

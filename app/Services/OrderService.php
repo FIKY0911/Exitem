@@ -68,7 +68,7 @@ class OrderService
 
         $productTransactionId = null;
         try {
-           DB::transaction(function() use ($validated, $productTransactionId, $orderData) {
+           DB::transaction(function() use ($validated, &$productTransactionId, $orderData) {
                 if (isset($validated['proof'])) {
                     $proofPath = $validated['proof']->store('proofs', 'public');
                     $validated['proof'] = $proofPath;
@@ -84,12 +84,20 @@ class OrderService
                 $validated['sub_total_amount'] = $orderData['sub_total_amount'];
                 $validated['grand_total_amount'] = $orderData['grand_total_amount'];
                 $validated['product_id'] = $orderData['product_id'];
+                $validated['user_id'] = \Illuminate\Support\Facades\Auth::id();
                 
                 $validated['is_paid'] = false;
                 $validated['booking_trx_id'] = Transaction::generateUniqueTrxId();
 
+                $product = \App\Models\Product::findOrFail($orderData['product_id']);
+                if (!$product->hasStock($orderData['quantity'])) {
+                    throw new \Exception('Sorry, the product is out of stock.');
+                }
+
                 $newTransaction = $this->orderRepository->createTransaction($validated);
                 $productTransactionId = $newTransaction->id;
+
+                $product->reduceStock($orderData['quantity']);
             });
         } catch (\Exception $e) {
             Log::error('Error saving transaction: ' . $e->getMessage());

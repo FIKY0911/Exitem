@@ -41,8 +41,7 @@ class BannersTable
             ->recordActions([
                 EditAction::make(),
             ])
-            ->toolbarActions([
-                \Filament\Actions\CreateAction::make(),
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

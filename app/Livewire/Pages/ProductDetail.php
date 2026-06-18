@@ -13,7 +13,7 @@ class ProductDetail extends Component
 
     public function mount($slug)
     {
-        $this->product = Product::with(['images', 'relatedProducts'])
+        $this->product = Product::with(['images', 'relatedProducts', 'reviews'])
                                 ->where('slug', $slug)
                                 ->firstOrFail();
     }

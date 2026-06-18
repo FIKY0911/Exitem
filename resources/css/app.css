@@ -79,19 +79,34 @@ h1, h2, h3, h4, h5, h6, .section-title, .hero-title, .logo {
     display: flex;
     align-items: center;
     background-color: var(--bg-gray);
-    border-radius: 4px;
-    padding: 5px 10px;
+    border-radius: 9999px;
+    padding: 6px 16px;
+    border: 1px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.search-box:focus-within {
+    background-color: #ffffff;
+    border-color: var(--primary-red);
+    box-shadow: 0 4px 12px rgba(219, 68, 68, 0.15);
 }
 .search-box input {
     background: transparent;
     border: none;
     outline: none;
-    padding: 5px;
+    padding: 6px 8px;
     width: 100%;
     max-width: 200px;
+    transition: max-width 0.3s ease;
+    font-size: 14px;
+}
+.search-box:focus-within input {
+    max-width: 260px;
 }
 .search-box.search-full input {
     max-width: 100%;
+}
+.search-box:focus-within svg {
+    color: var(--primary-red) !important;
 }
 
 .cat-box {

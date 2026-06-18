@@ -12,54 +12,7 @@
             <div style="display: flex; gap: 2rem; align-items: flex-start;">
 
                 {{-- SIDEBAR --}}
-                <aside style="width: 260px; flex-shrink: 0;">
-                    <div style="background: #fff; border-radius: 1.25rem; border: 1px solid #e5e7eb; box-shadow: 0 2px 20px rgba(0,0,0,0.05); overflow: hidden;">
-                        <div style="height: 5px; background: linear-gradient(90deg, #DB4444, #e8704a);"></div>
-                        <div style="padding: 1.75rem;">
-                            {{-- User info --}}
-                            <div style="display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed #e5e7eb;">
-                                <div style="width: 72px; height: 72px; border-radius: 50%; overflow: hidden; margin-bottom: 0.75rem; box-shadow: 0 0 0 3px #fff, 0 0 0 5px #e5e7eb, 0 4px 12px rgba(0,0,0,0.08);">
-                                    @if ($existingAvatar)
-                                        <img src="{{ asset('storage/' . $existingAvatar) }}" style="width:100%; height:100%; object-fit: cover;">
-                                    @else
-                                        <div style="width:100%; height:100%; background: linear-gradient(135deg,#f5f5f5,#e8e8e8); display:flex; align-items:center; justify-content:center;">
-                                            <svg style="width:32px; height:32px; color:#9ca3af;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                        </div>
-                                    @endif
-                                </div>
-                                <p style="font-weight: 700; font-size: 0.875rem; color: #111827;">{{ auth()->user()->name }}</p>
-                                <p style="font-size: 0.75rem; color: #9ca3af; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%;">{{ auth()->user()->email }}</p>
-                            </div>
-
-                            {{-- Nav --}}
-                            <nav style="font-size: 0.875rem;">
-                                <p style="font-size: 9px; font-weight: 800; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">Account</p>
-                                <a href="{{ route('my-account') }}" style="display:flex; align-items:center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 0.75rem; font-weight: 700; color: #DB4444; background: rgba(219,68,68,0.08); margin-bottom: 2px;">
-                                    <svg style="width:16px;height:16px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> My Profile
-                                </a>
-                                <a href="#" style="display:flex; align-items:center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 0.75rem; color: #6b7280; margin-bottom: 2px; transition: background 0.2s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
-                                    <svg style="width:16px;height:16px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Address Book
-                                </a>
-                                <a href="#" style="display:flex; align-items:center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 0.75rem; color: #6b7280; margin-bottom: 12px; transition: background 0.2s;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
-                                    <svg style="width:16px;height:16px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg> Payment Options
-                                </a>
-
-                                <p style="font-size: 9px; font-weight: 800; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">Orders</p>
-                                <a href="{{ route('my-orders') }}" style="display:flex; align-items:center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 0.75rem; color: #6b7280; margin-bottom: 2px;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
-                                    <svg style="width:16px;height:16px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> My Returns
-                                </a>
-                                <a href="{{ route('my-orders') }}" style="display:flex; align-items:center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 0.75rem; color: #6b7280; margin-bottom: 12px;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
-                                    <svg style="width:16px;height:16px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> My Cancellations
-                                </a>
-
-                                <p style="font-size: 9px; font-weight: 800; color: #d1d5db; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem;">Wishlist</p>
-                                <a href="{{ route('my-collection') }}" style="display:flex; align-items:center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 0.75rem; color: #6b7280;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
-                                    <svg style="width:16px;height:16px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg> My Collection
-                                </a>
-                            </nav>
-                        </div>
-                    </div>
-                </aside>
+                <x-account-sidebar />
 
                 {{-- MAIN CONTENT --}}
                 <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1.5rem;">
