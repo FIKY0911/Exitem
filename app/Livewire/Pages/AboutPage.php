@@ -4,12 +4,22 @@ namespace App\Livewire\Pages;
 
 use App\Models\Setting;
 use App\Models\TeamMember;
+use App\Models\Transaction;
+use App\Models\User;
 use Livewire\Component;
 
 class AboutPage extends Component
 {
     public function render()
     {
+        $totalUsers = User::where('role', 'customer')->count();
+        $dailyTransactions = Transaction::whereDate('created_at', today())->count();
+        $paidTransactions = Transaction::where('is_paid', true)->count();
+        $totalTransactions = Transaction::count();
+        $satisfactionRate = $totalTransactions > 0 
+            ? round(($paidTransactions / $totalTransactions) * 100) 
+            : 99;
+
         return view('livewire.pages.about', [
             'heroTitle'     => Setting::get('about_hero_title',     'Elevating Excellence'),
             'heroSubtitle'  => Setting::get('about_hero_subtitle',  ''),
@@ -17,9 +27,9 @@ class AboutPage extends Component
             'storyText1'    => Setting::get('about_story_text1',    ''),
             'storyText2'    => Setting::get('about_story_text2',    ''),
             'stats'         => [
-                ['value' => Setting::get('about_stat1_value', '15K+'), 'label' => Setting::get('about_stat1_label', 'Happy Users')],
-                ['value' => Setting::get('about_stat2_value', '500+'), 'label' => Setting::get('about_stat2_label', 'Daily Transactions')],
-                ['value' => Setting::get('about_stat3_value', '99%'),  'label' => Setting::get('about_stat3_label', 'Satisfaction Rate')],
+                ['value' => number_format($totalUsers), 'label' => 'Happy Users'],
+                ['value' => number_format($dailyTransactions), 'label' => 'Daily Transactions'],
+                ['value' => $satisfactionRate . '%', 'label' => 'Satisfaction Rate'],
             ],
             'vision'      => Setting::get('about_vision',    ''),
             'mission'     => array_filter([

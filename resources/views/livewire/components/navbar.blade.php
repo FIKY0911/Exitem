@@ -1,7 +1,7 @@
 <header class="{{ $dark ? 'bg-black text-white border-b border-white/10' : 'bg-white text-black border-b border-gray-200' }} sticky top-0 z-50 transition-colors duration-300" x-data="{ mobileMenuOpen: false, searchOpen: false }">
     {{-- Promo banner: hidden on mobile --}}
     <div class="hidden md:block bg-black text-white text-center py-2 text-sm px-4">
-        <p>Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! <a href="#" class="font-bold underline ml-2">ShopNow</a></p>
+        <p>Diskon Musim Panas Semua Baju Renang Dan Gratis Ongkir - DISKON 50%! <a href="#" class="font-bold underline ml-2">Belanja Sekarang</a></p>
     </div>
 
     <div class="container-max flex items-center justify-between gap-6 px-6 sm:px-10 lg:px-16" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
@@ -33,10 +33,10 @@
         <nav class="hidden md:flex gap-10 py-2 text-base">
             @php
                 $navLinks = [
-                    ['route' => 'home',     'label' => 'Home'],
-                    ['route' => 'products', 'label' => 'Products'],
-                    ['route' => 'contact',  'label' => 'Contact'],
-                    ['route' => 'about',    'label' => 'About'],
+                    ['route' => 'home',     'label' => 'Beranda'],
+                    ['route' => 'products', 'label' => 'Produk'],
+                    ['route' => 'contact',  'label' => 'Kontak'],
+                    ['route' => 'about',    'label' => 'Tentang'],
                 ];
             @endphp
             @foreach($navLinks as $link)
@@ -58,7 +58,7 @@
             <a href="{{ route('signup') }}"
                style="font-weight:500; text-decoration:none; color:#7D8184; transition:color 0.2s;"
                onmouseover="this.style.color='{{ $dark ? '#fff' : '#000' }}'" onmouseout="this.style.color='#7D8184'">
-                Sign Up
+                Daftar
             </a>
             @endguest
         </nav>
@@ -72,7 +72,7 @@
                     <input type="text" 
                            wire:model.live.debounce.300ms="search" 
                            wire:keydown.enter="performSearch" 
-                           placeholder="What are you looking for?" 
+                           placeholder="Apa yang Anda cari?" 
                            class="text-black placeholder-gray-500">
                     <svg class="w-5 h-5 text-[var(--text-gray)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -138,13 +138,12 @@
             {{-- Profile / Login --}}
             @auth
                 <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" class="{{ $dark ? 'text-white hover:text-white/80' : 'text-black hover:text-[var(--primary-red)]' }} transition-colors focus:outline-none">
+                    <button @click="open = !open" class="{{ $dark ? 'text-white hover:text-white/80' : 'text-black hover:text-[var(--primary-red)]' }} transition-colors relative focus:outline-none">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
                     </button>
 
-                    {{-- Dropdown Menu --}}
                     <div x-show="open" 
                          @click.away="open = false"
                          x-transition:enter="transition ease-out duration-100"
@@ -153,37 +152,37 @@
                          x-transition:leave="transition ease-in duration-75"
                          x-transition:leave-start="opacity-100 scale-100"
                          x-transition:leave-end="opacity-0 scale-95"
-                         class="absolute right-0 mt-3 w-64 rounded-md shadow-lg py-1 z-50 overflow-hidden flex flex-col"
-                         style="background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%); backdrop-filter: blur(10px); display: none;">
+                         class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-1 z-50 border border-gray-100"
+                         style="top: calc(100% + 0.5rem); display: none;">
                         
-                        <a href="{{ route('my-account') }}" style="display: flex; align-items: center; gap: 1rem;" class="px-4 py-3 text-sm text-white hover:bg-white/10 transition-colors w-full whitespace-nowrap group">
-                            <svg class="w-6 h-6 opacity-90 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                            <span class="text-[15px]">Manage My Account</span>
+                        <a href="{{ route('my-account') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                            <span>Kelola Akun Saya</span>
                         </a>
                         
-                        <a href="{{ route('my-orders') }}" style="display: flex; align-items: center; gap: 1rem;" class="px-4 py-3 text-sm text-white hover:bg-white/10 transition-colors w-full whitespace-nowrap group">
-                            <svg class="w-6 h-6 opacity-90 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                            <span class="text-[15px]">My Order</span>
+                        <a href="{{ route('my-orders') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                            <span>Pesanan Saya</span>
                         </a>
                         
-                        <a href="{{ route('my-collection') }}" style="display: flex; align-items: center; gap: 1rem;" class="px-4 py-3 text-sm text-white hover:bg-white/10 transition-colors w-full whitespace-nowrap group">
-                            <svg class="w-6 h-6 opacity-90 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <span class="text-[15px]">My Cancellations</span>
+                        <a href="{{ route('my-collection') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>Pembatalan Saya</span>
                         </a>
                         
-                        <a href="{{ route('my-reviews') }}" style="display: flex; align-items: center; gap: 1rem;" class="px-4 py-3 text-sm text-white hover:bg-white/10 transition-colors w-full whitespace-nowrap group">
-                            <svg class="w-6 h-6 opacity-90 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.482-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
-                            <span class="text-[15px]">My Reviews</span>
+                        <a href="{{ route('my-reviews') }}" class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.482-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                            <span>Ulasan Saya</span>
                         </a>
                         
-                        <button wire:click="logout" style="display: flex; align-items: center; gap: 1rem;" class="w-full px-4 py-3 text-sm text-white hover:bg-white/10 transition-colors border-t border-white/10 whitespace-nowrap group">
-                            <svg class="w-6 h-6 opacity-90 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
-                            <span class="text-[15px]">Logout</span>
+                        <button wire:click="logout" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-t border-gray-100">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                            <span>Keluar</span>
                         </button>
                     </div>
                 </div>
             @else
-                <a href="{{ route('login') }}" class="{{ $dark ? 'text-white hover:text-white/80' : 'text-black hover:text-[var(--primary-red)]' }} transition-colors">
+                <a href="{{ route('login') }}" class="{{ $dark ? 'text-white hover:text-white/80' : 'text-black hover:text-[var(--primary-red)]' }} transition-colors relative">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
                     </svg>

@@ -33,10 +33,10 @@ class UserForm
                     
                 \Filament\Forms\Components\Select::make('role')
                     ->options([
-                        'user' => 'User',
+                        'customer' => 'Customer',
                         'admin' => 'Admin',
                     ])
-                    ->default('user')
+                    ->default('customer')
                     ->required(),
                     
                 \Filament\Forms\Components\TextInput::make('password')

@@ -32,10 +32,6 @@
                     <button type="submit" class="btn-auth">Log In</button>
                     <a href="{{ route('signup') }}" class="auth-link">Don't have an account?</a>
                 </div>
-                
-                <div class="text-center mt-6">
-                    <a href="#" class="auth-link">Forgot Password?</a>
-                </div>
             </form>
         </div>
     </main>

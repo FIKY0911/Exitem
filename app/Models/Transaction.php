@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
@@ -28,21 +29,29 @@ class Transaction extends Model
         'proof',
     ];
 
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function product(): BelongsTo {
+    public function product(): BelongsTo
+    {
         return $this->belongsTo(Product::class);
     }
 
-    public static function generateUniqueTrxId() {
-        $prefix = "SS";
+    public function midtransPayment(): HasOne
+    {
+        return $this->hasOne(Payment::class, 'order_id', 'booking_trx_id');
+    }
+
+    public static function generateUniqueTrxId()
+    {
+        $prefix = 'SS';
 
         do {
-            $renderString = $prefix . mt_rand(1000, 9999); 
+            $renderString = $prefix.mt_rand(1000, 9999);
         } while (self::where('booking_trx_id', $renderString)->exists());
-        
+
         return $renderString;
     }
 }

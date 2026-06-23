@@ -34,6 +34,13 @@
                                     </div>
                                 @endif
 
+                                @if (session()->has('status'))
+                                    <div style="margin-bottom: 1.5rem; padding: 0.875rem 1rem; background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; border-radius: 0.75rem; font-size: 0.875rem; display: flex; align-items: center; gap: 0.75rem;">
+                                        <svg style="width:20px;height:20px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        {{ session('status') }}
+                                    </div>
+                                @endif
+
                                 {{-- Avatar --}}
                                 <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px dashed #e5e7eb;">
                                     <div class="group" style="position: relative; width: 88px; height: 88px; border-radius: 50%; overflow: hidden; flex-shrink: 0; cursor: pointer; box-shadow: 0 0 0 3px #fff, 0 0 0 5px #e5e7eb, 0 4px 14px rgba(0,0,0,0.1); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
@@ -55,12 +62,8 @@
                                     <div>
                                         <h3 style="font-weight: 700; color: #1f2937; font-size: 0.95rem;">Profile Photo</h3>
                                         <p style="font-size: 0.8rem; color: #9ca3af; margin-top: 4px; line-height: 1.5;">Hover the photo to change.<br>JPG, PNG or WEBP — max 2MB.</p>
-                                        <div wire:loading wire:target="avatar" style="display:flex;align-items:center;gap:6px;color:#DB4444;font-size:0.75rem;font-weight:700;margin-top:8px;">
-                                            <svg style="animation:spin 1s linear infinite;width:14px;height:14px;" fill="none" viewBox="0 0 24 24"><circle style="opacity:0.25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path style="opacity:0.75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                                            Uploading...
-                                        </div>
                                         @if ($avatar)
-                                            <p wire:loading.remove wire:target="avatar" style="font-size:0.75rem;color:#15803d;font-weight:600;margin-top:8px;">✓ Image ready</p>
+                                            <p style="font-size:0.75rem;color:#15803d;font-weight:600;margin-top:8px;">✓ Image ready to upload</p>
                                         @endif
                                         @error('avatar') <p style="font-size:0.75rem;color:#DB4444;font-weight:600;margin-top:6px;">{{ $message }}</p> @enderror
                                     </div>
@@ -106,49 +109,30 @@
                     <div style="background: #fff; border-radius: 1.25rem; border: 1px solid #e5e7eb; box-shadow: 0 2px 20px rgba(0,0,0,0.05); overflow: hidden;">
                         <div style="height: 5px; background: linear-gradient(90deg, #4a5568, #2d3748);"></div>
                         <div style="padding: 2.5rem;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
                                 <div style="width: 4px; height: 24px; border-radius: 9999px; background: #4a5568;"></div>
-                                <h2 style="font-size: 1.125rem; font-weight: 800; color: #111827;">Password Changes</h2>
+                                <h2 style="font-size: 1.125rem; font-weight: 800; color: #111827;">Reset Password</h2>
                             </div>
 
-                            <form wire:submit.prevent="updatePassword">
-                                @if (session()->has('password_message'))
-                                    <div style="margin-bottom: 1.5rem; padding: 0.875rem 1rem; background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; border-radius: 0.75rem; font-size: 0.875rem; display:flex;align-items:center;gap:0.75rem;">
-                                        <svg style="width:20px;height:20px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                        {{ session('password_message') }}
-                                    </div>
-                                @endif
-
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
-                                    <div>
-                                        <label style="display:block;font-size:10px;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.5rem;">Current Password</label>
-                                        <input type="password" wire:model="current_password" placeholder="••••••••"
-                                               style="display:block;width:100%;padding:0.8rem 1rem;font-size:0.875rem;color:#111827;background:#faf8f5;border:1.5px solid #e5e7eb;border-radius:0.75rem;outline:none;box-sizing:border-box;transition:border-color 0.2s,background 0.2s;"
-                                               onfocus="this.style.borderColor='#4a5568';this.style.background='#fff';"
-                                               onblur="this.style.borderColor='#e5e7eb';this.style.background='#faf8f5';">
-                                        @error('current_password') <p style="font-size:0.72rem;color:#DB4444;font-weight:600;margin-top:4px;">{{ $message }}</p> @enderror
-                                    </div>
-                                    <div>
-                                        <label style="display:block;font-size:10px;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.5rem;">New Password</label>
-                                        <input type="password" wire:model="new_password" placeholder="Min. 8 characters"
-                                               style="display:block;width:100%;padding:0.8rem 1rem;font-size:0.875rem;color:#111827;background:#faf8f5;border:1.5px solid #e5e7eb;border-radius:0.75rem;outline:none;box-sizing:border-box;transition:border-color 0.2s,background 0.2s;"
-                                               onfocus="this.style.borderColor='#4a5568';this.style.background='#fff';"
-                                               onblur="this.style.borderColor='#e5e7eb';this.style.background='#faf8f5';">
-                                        @error('new_password') <p style="font-size:0.72rem;color:#DB4444;font-weight:600;margin-top:4px;">{{ $message }}</p> @enderror
-                                    </div>
-                                    <div>
-                                        <label style="display:block;font-size:10px;font-weight:800;color:#6b7280;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:0.5rem;">Confirm New Password</label>
-                                        <input type="password" wire:model="new_password_confirmation" placeholder="Re-enter new password"
-                                               style="display:block;width:100%;padding:0.8rem 1rem;font-size:0.875rem;color:#111827;background:#faf8f5;border:1.5px solid #e5e7eb;border-radius:0.75rem;outline:none;box-sizing:border-box;transition:border-color 0.2s,background 0.2s;"
-                                               onfocus="this.style.borderColor='#4a5568';this.style.background='#fff';"
-                                               onblur="this.style.borderColor='#e5e7eb';this.style.background='#faf8f5';">
-                                    </div>
+                            @if (session()->has('password_message'))
+                                <div style="margin-bottom: 1.5rem; padding: 0.875rem 1rem; background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; border-radius: 0.75rem; font-size: 0.875rem; display:flex;align-items:center;gap:0.75rem;">
+                                    <svg style="width:20px;height:20px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    {{ session('password_message') }}
                                 </div>
+                            @endif
 
-                                <div style="display:flex;justify-content:flex-end;">
-                                    <button type="submit" style="padding:0.65rem 2rem;font-size:0.875rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#4a5568,#2d3748);border:none;border-radius:0.75rem;cursor:pointer;box-shadow:0 4px 14px rgba(45,55,72,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(45,55,72,0.45)';" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 14px rgba(45,55,72,0.3)';">Update Password</button>
+                            @if (session()->has('password_error'))
+                                <div style="margin-bottom: 1.5rem; padding: 0.875rem 1rem; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; border-radius: 0.75rem; font-size: 0.875rem; display:flex;align-items:center;gap:0.75rem;">
+                                    <svg style="width:20px;height:20px;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    {{ session('password_error') }}
                                 </div>
-                            </form>
+                            @endif
+
+                            <p style="color: #6b7280; font-size: 0.875rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                                Click the button below to receive a password reset link via email. The link will be sent to <strong style="color: #111827;">{{ auth()->user()->email }}</strong>
+                            </p>
+
+                            <button wire:click="sendResetLink" type="button" style="padding:0.65rem 2rem;font-size:0.875rem;font-weight:700;color:#fff;background:linear-gradient(135deg,#4a5568,#2d3748);border:none;border-radius:0.75rem;cursor:pointer;box-shadow:0 4px 14px rgba(45,55,72,0.3);transition:all 0.2s;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 6px 20px rgba(45,55,72,0.45)';" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 14px rgba(45,55,72,0.3)';">Send Reset Link</button>
                         </div>
                     </div>
 

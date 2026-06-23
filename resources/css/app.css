@@ -309,19 +309,32 @@ nav a:hover {
         min-height: 580px;
     }
 }
+.new-arrival-card img.bg-blur {
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    width: 120%;
+    height: 120%;
+    object-fit: cover;
+    filter: blur(30px);
+    opacity: 0.5;
+    z-index: 0;
+}
 .new-arrival-card img.bg-image {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    opacity: 0.8;
-    z-index: 0;
+    object-fit: contain;
+    padding: 20px;
+    box-sizing: border-box;
+    opacity: 1;
+    z-index: 1;
 }
 .new-arrival-card .content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 .new-arrival-card .content h3 {
     font-size: 24px;

@@ -39,7 +39,15 @@ class Signup extends Component
             'name' => 'required|string|min:3|max:100',
             'phone' => 'required|string|regex:/^[0-9\-\+\s]+$/|min:10|max:15',
             'identifier' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|string|min:8|max:255',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:255',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
+            ],
+        ], [
+            'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, and one number.'
         ]);
 
         try {

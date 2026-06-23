@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Transactions\Tables;
 
+use App\Models\Transaction;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -9,24 +10,24 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Filament\Notifications\Notification;
-use App\Models\Transaction;
 
 class TransactionsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->poll('5s')
             ->columns([
                 ImageColumn::make('product.thumbnail')
                     ->label('Thumbnail'),
-                
+
                 TextColumn::make('booking_trx_id')
                     ->label('Trx ID')
                     ->searchable(),
@@ -36,7 +37,7 @@ class TransactionsTable
                     ->description(fn (Transaction $record): string => $record->user?->email ?? 'Guest')
                     ->searchable()
                     ->sortable(),
-                
+
                 TextColumn::make('name')
                     ->label('Billing Name')
                     ->description(fn (Transaction $record): string => "Phone: {$record->phone}")
@@ -87,7 +88,7 @@ class TransactionsTable
                     })
                     ->color('success')
                     ->requiresConfirmation()
-                    ->visible(fn (Transaction $record) => !$record->is_paid),
+                    ->visible(fn (Transaction $record) => ! $record->is_paid),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

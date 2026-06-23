@@ -19,9 +19,7 @@ class MyAccount extends Component
     public $avatar;
     public $existingAvatar;
     
-    public $current_password;
-    public $new_password;
-    public $new_password_confirmation;
+    
 
     public function mount()
     {
@@ -35,6 +33,7 @@ class MyAccount extends Component
     public function updatedAvatar()
     {
         $this->validate(['avatar' => 'nullable|image|max:2048']);
+        $this->dispatch('avatar-uploaded');
     }
 
     public function updateProfile()
@@ -45,43 +44,62 @@ class MyAccount extends Component
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'phone' => 'nullable|string|max:20',
-            'avatar' => 'nullable|image|max:2048', // max 2MB
         ]);
 
-        if ($this->avatar) {
-            // Hapus avatar lama jika ada
+        // XSS Protection - sanitize input
+        $validated['name'] = strip_tags($validated['name']);
+        $validated['phone'] = strip_tags($validated['phone'] ?? '');
+
+        if ($this->avatar && is_object($this->avatar)) {
+            // File Upload Security - validate mime type
+            $this->validate([
+                'avatar' => 'image|mimes:jpeg,jpg,png,webp|max:2048'
+            ]);
+            
             if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            // Simpan yang baru
             $validated['avatar'] = $this->avatar->store('avatars', 'public');
-            $this->existingAvatar = $validated['avatar']; // Update preview
-            $this->avatar = null; // Clear the temporary upload
-        } else {
-            unset($validated['avatar']);
+            $this->existingAvatar = $validated['avatar'];
+            $this->reset('avatar');
         }
 
         $user->update($validated);
 
         session()->flash('message', 'Profile updated successfully.');
+        return redirect()->route('my-account');
     }
 
-    public function updatePassword()
+    public function sendResetLink()
     {
-        $user = Auth::user();
-
-        $this->validate([
-            'current_password' => ['required', 'current_password'],
-            'new_password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        $user->update([
-            'password' => Hash::make($this->new_password),
-        ]);
-
-        $this->reset(['current_password', 'new_password', 'new_password_confirmation']);
-
-        session()->flash('password_message', 'Password updated successfully.');
+        try {
+            $user = Auth::user();
+            
+            // Generate 6 digit OTP
+            $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            
+            // Delete old OTP for this email
+            \DB::table('password_reset_otps')->where('email', $user->email)->delete();
+            
+            // Store OTP in database
+            \DB::table('password_reset_otps')->insert([
+                'email' => $user->email,
+                'otp' => $otp,
+                'expires_at' => now()->addMinutes(10),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            
+            // Send OTP via email
+            \Mail::to($user->email)->send(new \App\Mail\ResetPasswordOtpMail($otp, $user->name));
+            
+            session()->flash('password_message', 'An OTP has been sent to your email (' . $user->email . '). Please check your inbox.');
+            
+            // Redirect to OTP verification page
+            return redirect()->route('verify-reset-otp');
+        } catch (\Exception $e) {
+            session()->flash('password_error', 'Failed to send OTP: ' . $e->getMessage());
+        }
     }
 
     public function render()
