@@ -24,11 +24,11 @@
         <div>
             <h4 class="text-xl font-medium mb-6">Account</h4>
             <ul class="flex flex-col gap-4 text-gray-300">
-                <li><a href="#" class="hover:text-white transition-colors">My Account</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">Login / Register</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">Cart</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">Wishlist</a></li>
-                <li><a href="#" class="hover:text-white transition-colors">Shop</a></li>
+                <li><a href="{{ route('my-account') }}" class="hover:text-white transition-colors">My Account</a></li>
+                @guest<li><a href="{{ route('login') }}" class="hover:text-white transition-colors">Login / Register</a></li>@endguest
+                <li><a href="{{ route('cart') }}" class="hover:text-white transition-colors">Cart</a></li>
+                <li><a href="{{ route('wishlist') }}" class="hover:text-white transition-colors">Wishlist</a></li>
+                <li><a href="{{ route('products') }}" class="hover:text-white transition-colors">Shop</a></li>
             </ul>
         </div>
         
