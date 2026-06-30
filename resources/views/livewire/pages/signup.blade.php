@@ -1,7 +1,7 @@
 <div>
     <livewire:components.navbar :dark="false" />
 
-    <main class="auth-page py-20">
+    <main class="auth-page">
         <div class="auth-container">
             <h1 class="auth-header">Sign Up</h1>
             

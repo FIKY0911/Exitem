@@ -55,10 +55,19 @@
                 </a>
             @endforeach
             @guest
+            @php $isAuthActive = request()->routeIs('login') || request()->routeIs('signup'); @endphp
             <a href="{{ route('signup') }}"
-               style="font-weight:500; text-decoration:none; color:#7D8184; transition:color 0.2s;"
-               onmouseover="this.style.color='{{ $dark ? '#fff' : '#000' }}'" onmouseout="this.style.color='#7D8184'">
+               style="position:relative; font-weight:500; text-decoration:none; padding-bottom:4px;
+                      color:{{ $isAuthActive ? ($dark ? '#fff' : '#000') : '#7D8184' }};
+                      transition:color 0.2s;"
+               onmouseover="this.style.color='{{ $dark ? '#fff' : '#000' }}'" onmouseout="this.style.color='{{ $isAuthActive ? ($dark ? '#fff' : '#000') : '#7D8184' }}'">
                 Daftar
+                <span style="position:absolute; bottom:0; left:0; width:100%; height:2px;
+                             background:{{ $dark ? '#fff' : '#000' }}; border-radius:1px;
+                             transform:scaleX({{ $isAuthActive ? '1' : '0' }});
+                             transform-origin:left;
+                             transition:transform 0.2s ease;"
+                      class="nav-underline"></span>
             </a>
             @endguest
         </nav>
