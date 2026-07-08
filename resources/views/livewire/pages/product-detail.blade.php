@@ -1,7 +1,7 @@
 <div>
     <livewire:components.navbar />
 
-    <main class="container-max py-10">
+    <main class="max-w-[1170px] mx-auto px-5 py-10">
 
         {{-- Breadcrumb --}}
         <nav class="text-sm mb-8 flex items-center gap-2" style="color:#7D8184">
@@ -173,10 +173,12 @@
 
         {{-- Related Items --}}
         @if($product->relatedProducts->count())
-        <section class="section-spacing">
+        <section class="py-20">
             <div class="mb-8">
-                <span class="red-rect"></span>
-                <span class="text-[#DB4444] font-semibold">Related Items</span>
+                <div class="inline-flex items-center">
+                    <span class="inline-block w-5 h-10 bg-[#DB4444] rounded mr-4 align-middle"></span>
+                    <span class="text-[#DB4444] font-semibold">Related Items</span>
+                </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
                 @foreach($product->relatedProducts as $related)

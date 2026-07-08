@@ -1,7 +1,7 @@
 <div class="flex flex-col min-h-screen">
     <livewire:components.navbar />
 
-    <main class="container-max py-10 flex-1">
+    <main class="max-w-[1170px] mx-auto px-5 py-10 flex-1">
 
         {{-- Header --}}
         <div class="flex items-center justify-between mb-8">

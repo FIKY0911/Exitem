@@ -59,6 +59,20 @@ class CartService
         session()->forget(self::SESSION_KEY);
     }
 
+    public function items(): array
+    {
+        return array_map(function($item) {
+            return [
+                'id' => $item['product_id'],
+                'name' => $item['name'],
+                'price' => $item['price'],
+                'thumbnail' => $item['thumbnail'],
+                'slug' => $item['slug'],
+                'quantity' => $item['quantity'],
+            ];
+        }, $this->get());
+    }
+
     public function count(): int
     {
         return array_sum(array_column($this->get(), 'quantity'));

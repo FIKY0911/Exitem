@@ -27,6 +27,8 @@ Route::get('/products', Products::class)->name('products');
 Route::get('/search', SearchResults::class)->name('search');
 Route::get('/login', Login::class)->name('login');
 Route::get('/signup', Signup::class)->name('signup');
+Route::get('/forgot-password', \App\Livewire\Pages\ForgotPassword::class)->name('forgot-password');
+Route::get('/verify-reset-otp', \App\Livewire\Pages\VerifyResetOtp::class)->name('verify-reset-otp');
 Route::middleware('auth')->group(function () {
     Route::get('/my-account', MyAccount::class)->name('my-account');
     Route::get('/my-orders', MyOrders::class)->name('my-orders');
@@ -38,6 +40,32 @@ Route::middleware('auth')->group(function () {
 
     // Wishlist
     Route::get('/wishlist', WishlistPage::class)->name('wishlist');
+    Route::post('/wishlist/toggle/{product:slug}', function (Product $product) {
+        $sessionId = session()->getId();
+        $existing = Wishlist::where('session_id', $sessionId)
+                           ->where('product_id', $product->id)
+                           ->first();
+        
+        if ($existing) {
+            // Remove from wishlist
+            $existing->delete();
+            $action = 'removed';
+        } else {
+            // Add to wishlist
+            Wishlist::create([
+                'session_id' => $sessionId,
+                'product_id' => $product->id,
+            ]);
+            $action = 'added';
+        }
+        
+        $count = Wishlist::where('session_id', $sessionId)->count();
+
+        return request()->ajax()
+            ? response()->json(['count' => $count, 'action' => $action])
+            : back();
+    })->name('wishlist.toggle');
+    
     Route::post('/wishlist/add/{product:slug}', function (Product $product) {
         Wishlist::firstOrCreate([
             'session_id' => session()->getId(),
@@ -61,6 +89,7 @@ Route::middleware('auth')->group(function () {
 
     // Cart
     Route::get('/cart', CartPage::class)->name('cart');
+    Route::post('/cart/toggle/{product:slug}', [CartController::class, 'toggle'])->name('cart.toggle');
     Route::post('/cart/add/{product:slug}', [CartController::class, 'add'])->name('cart.add');
     Route::post('/cart/update/{productId}', [CartController::class, 'update'])->name('cart.update');
     Route::post('/cart/remove/{productId}', [CartController::class, 'remove'])->name('cart.remove');

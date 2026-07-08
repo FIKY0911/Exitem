@@ -1,7 +1,7 @@
 <div class="mt-16">
     <div class="flex items-center gap-4 mb-8">
-        <span class="red-rect"></span>
-        <span class="text-[var(--primary-red)] font-semibold">Reviews</span>
+        <span class="inline-block w-5 h-10 bg-[#DB4444] rounded mr-4 align-middle"></span>
+        <span class="text-[#DB4444] font-semibold">Reviews</span>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -44,18 +44,18 @@
 
                     <div>
                         <label class="block text-sm font-medium mb-1">Comment</label>
-                        <textarea wire:model="comment" rows="4" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-[var(--primary-red)]" placeholder="Share your thoughts about this product..."></textarea>
+                        <textarea wire:model="comment" rows="4" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:border-[#DB4444] focus:ring-1 focus:ring-[#DB4444]" placeholder="Share your thoughts about this product..."></textarea>
                         @error('comment') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
 
-                    <button type="submit" class="w-full bg-[var(--primary-red)] text-white py-3 rounded-md font-semibold hover:bg-red-600 transition-colors">
+                    <button type="submit" class="w-full bg-[#DB4444] text-white py-3 rounded-md font-semibold hover:bg-[#c33b3b] transition-colors shadow-sm hover:shadow-md">
                         Submit Review
                     </button>
                 </form>
             @else
-                <div class="mt-8 p-6 border border-dashed border-gray-300 rounded-lg text-center">
+                <div class="mt-8 p-6 border border-dashed border-gray-300 rounded-lg text-center bg-white">
                     <p class="text-gray-600 mb-4">Please login to write a review.</p>
-                    <a href="{{ route('login') }}" class="text-[var(--primary-red)] font-semibold hover:underline">Login Now</a>
+                    <a href="{{ route('login') }}" class="text-[#DB4444] font-semibold hover:text-[#c33b3b] transition-colors hover:underline">Login Now</a>
                 </div>
             @endauth
         </div>

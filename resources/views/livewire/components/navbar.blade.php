@@ -4,7 +4,7 @@
         <p>Diskon Musim Panas Semua Baju Renang Dan Gratis Ongkir - DISKON 50%! <a href="#" class="font-bold underline ml-2">Belanja Sekarang</a></p>
     </div>
 
-    <div class="container-max flex items-center justify-between gap-6 px-6 sm:px-10 lg:px-16" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
+    <div class="max-w-[1170px] mx-auto px-5 flex items-center justify-between gap-6 px-6 sm:px-10 lg:px-16" style="padding-top: 1.5rem; padding-bottom: 1.5rem;">
 
         {{-- Left: Hamburger + Logo --}}
         <div class="flex items-center gap-4 sm:gap-6">
@@ -77,13 +77,14 @@
 
             {{-- Desktop Search Box (ONLY visible md and above) --}}
             <div class="hidden md:block relative" x-data="{ showSuggestions: @entangle('suggestions').live }">
-                <div class="search-box">
+                <!-- Search Box dengan Tailwind utilities -->
+                <div class="flex items-center bg-gray-100 rounded-full px-4 py-1.5 border border-transparent transition-all duration-300 ease-in-out focus-within:bg-white focus-within:border-[#DB4444] focus-within:shadow-[0_4px_12px_rgba(219,68,68,0.15)]">
                     <input type="text" 
                            wire:model.live.debounce.300ms="search" 
                            wire:keydown.enter="performSearch" 
                            placeholder="Apa yang Anda cari?" 
-                           class="text-black placeholder-gray-500">
-                    <svg class="w-5 h-5 text-[var(--text-gray)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="bg-transparent border-none outline-none px-2 py-1.5 w-full max-w-[200px] transition-all duration-300 ease-in-out text-sm text-black placeholder-gray-500 focus:max-w-[260px]">
+                    <svg class="w-5 h-5 text-gray-500 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                 </div>
@@ -117,30 +118,30 @@
             </button>
 
             {{-- Wishlist --}}
-            <a href="{{ route('wishlist') }}" class="{{ $dark ? 'text-white hover:text-white/80' : 'text-black hover:text-[var(--primary-red)]' }} transition-colors relative">
+            <a href="{{ route('wishlist') }}" class="{{ $dark ? 'text-white hover:text-white/80' : 'text-black hover:text-[#DB4444]' }} transition-colors relative">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
                 @if($wishlistCount > 0)
-                <span data-wishlist-count class="absolute -top-1 -right-2 bg-[var(--primary-red)] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                <span data-wishlist-count class="absolute -top-1 -right-2 bg-[#DB4444] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
                     {{ $wishlistCount }}
                 </span>
                 @else
-                <span data-wishlist-count class="absolute -top-1 -right-2 bg-[var(--primary-red)] text-white text-[10px] w-4 h-4 rounded-full items-center justify-center" style="display:none">0</span>
+                <span data-wishlist-count class="absolute -top-1 -right-2 bg-[#DB4444] text-white text-[10px] w-4 h-4 rounded-full items-center justify-center font-medium" style="display:none">0</span>
                 @endif
             </a>
 
             {{-- Cart --}}
-            <a href="{{ route('cart') }}" class="{{ $dark ? 'text-white hover:text-white/80' : 'text-black hover:text-[var(--primary-red)]' }} transition-colors relative">
+            <a href="{{ route('cart') }}" class="{{ $dark ? 'text-white hover:text-white/80' : 'text-black hover:text-[#DB4444]' }} transition-colors relative">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                 </svg>
                 @if($cartCount > 0)
-                <span data-cart-count class="absolute -top-1 -right-2 bg-[var(--primary-red)] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                <span data-cart-count class="absolute -top-1 -right-2 bg-[#DB4444] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-medium">
                     {{ $cartCount }}
                 </span>
                 @else
-                <span data-cart-count class="absolute -top-1 -right-2 bg-[var(--primary-red)] text-white text-[10px] w-4 h-4 rounded-full items-center justify-center" style="display:none">0</span>
+                <span data-cart-count class="absolute -top-1 -right-2 bg-[#DB4444] text-white text-[10px] w-4 h-4 rounded-full items-center justify-center font-medium" style="display:none">0</span>
                 @endif
             </a>
 
@@ -233,8 +234,9 @@
          class="md:hidden absolute w-full {{ $dark ? 'bg-black text-white' : 'bg-white' }} z-40 shadow-md border-t {{ $dark ? 'border-white/10' : 'border-gray-100' }}"
          style="display:none">
         <div class="px-4 py-3">
-            <div class="search-box search-full w-full" @click.stop style="display: flex; align-items: center; justify-content: space-between;">
-                <svg class="w-5 h-5 text-[var(--text-gray)] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Mobile Search Box dengan Tailwind utilities -->
+            <div @click.stop class="flex items-center justify-between bg-gray-100 rounded-full px-4 py-1.5 w-full">
+                <svg class="w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
                 <input type="text" wire:model.live.debounce.300ms="search" wire:keydown.enter="performSearch" placeholder="What are you looking for?"

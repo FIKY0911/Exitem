@@ -24,7 +24,7 @@
                                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                     @foreach($collection as $item)
                                         @php $product = $item->product; @endphp
-                                        <div class="product-card group relative">
+                                        <div class="relative rounded-lg overflow-hidden bg-white flex flex-col border border-gray-200 shadow-sm transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-xl group">
                                             {{-- Remove button --}}
                                             <button wire:click="removeFromCollection({{ $item->id }})"
                                                     class="absolute top-3 right-3 z-10 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-red-500 hover:text-white transition-all transform hover:scale-110">

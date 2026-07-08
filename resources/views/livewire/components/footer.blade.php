@@ -1,5 +1,5 @@
 <footer class="bg-black text-white pt-20 pb-6 mt-10">
-    <div class="container-max grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mb-16">
+    <div class="max-w-[1170px] mx-auto px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mb-16">
         <div>
             <h3 class="text-2xl font-bold font-secondary mb-6">Exclusive</h3>
             <h4 class="text-xl font-medium mb-4">Subscribe</h4>

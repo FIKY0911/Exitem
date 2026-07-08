@@ -91,7 +91,11 @@ class MyAccount extends Component
             ]);
             
             // Send OTP via email
-            \Mail::to($user->email)->send(new \App\Mail\ResetPasswordOtpMail($otp, $user->name));
+            $verificationUrl = route('verify-reset-otp', [
+                'email' => $user->email,
+                'otp' => $otp,
+            ]);
+            \Mail::to($user->email)->send(new \App\Mail\ResetPasswordOtpMail($otp, $user->name, $verificationUrl));
             
             session()->flash('password_message', 'An OTP has been sent to your email (' . $user->email . '). Please check your inbox.');
             

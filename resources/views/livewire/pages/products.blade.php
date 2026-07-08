@@ -1,7 +1,7 @@
 <div class="min-h-screen flex flex-col">
     <livewire:components.navbar />
     
-    <div class="flex-grow container-max px-6 sm:px-10 lg:px-16 py-12 w-full">
+    <div class="flex-grow max-w-[1170px] mx-auto px-5 sm:px-10 lg:px-16 py-12 w-full">
         <div class="mb-8">
             <h1 class="text-3xl font-bold mb-4">Semua Produk</h1>
             
