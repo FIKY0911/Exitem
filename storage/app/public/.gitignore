@@ -1,2 +1,6 @@
 *
 !.gitignore
+
+# Beri pengecualian untuk folder background-auth dan isinya
+!background-auth/
+!background-auth/**
