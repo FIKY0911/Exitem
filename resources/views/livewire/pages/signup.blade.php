@@ -2,11 +2,11 @@
     <livewire:components.navbar :dark="false" />
 
     <!-- Auth Page dengan Tailwind -->
-    <main class="bg-transparent bg-cover bg-center bg-no-repeat text-white min-h-screen flex items-center justify-center font-['Poppins']" style="background-image: url('/storage/background-auth/image-auth.webp');">
+    <main class="bg-transparent bg-cover bg-center bg-no-repeat text-white min-h-screen flex items-center justify-center font-['Poppins']" style="background-image: url('{{ asset('images/image-auth.webp') }}');">
         <!-- Auth Container -->
         <div class="bg-black/45 backdrop-blur-sm rounded-[20px] p-14 w-full max-w-[450px] shadow-[0_10px_28px_rgba(0,0,0,0.25)]">
             <h1 class="text-[34px] tracking-wide mb-8 text-center font-semibold">Sign Up</h1>
-            
+
             @if ($errors->any())
                 <div class="p-2.5 rounded mb-5 text-sm bg-red-900/20 text-red-300 border border-red-600">
                     @foreach ($errors->all() as $error)
@@ -17,52 +17,52 @@
 
             <form wire:submit.prevent="signup" autocomplete="off">
                 @csrf
-                
+
                 <!-- Full Name Field -->
                 <div class="mb-6">
                     <label for="name" class="block text-white/90 text-sm font-medium mb-2">Full Name</label>
-                    <input type="text" 
+                    <input type="text"
                            id="name"
-                           wire:model="name" 
-                           placeholder="Enter your full name" 
+                           wire:model="name"
+                           placeholder="Enter your full name"
                            required
                            class="bg-white/10 border border-white/30 rounded-lg p-3 w-full text-white text-[15px] outline-none transition-all duration-300 focus:border-[#8B1A1A] focus:bg-white/15 placeholder-white/50">
                 </div>
-                
+
                 <!-- Phone Number Field -->
                 <div class="mb-6">
                     <label for="phone" class="block text-white/90 text-sm font-medium mb-2">Phone Number</label>
-                    <input type="text" 
+                    <input type="text"
                            id="phone"
-                           wire:model="phone" 
-                           placeholder="e.g. 08123456789" 
+                           wire:model="phone"
+                           placeholder="e.g. 08123456789"
                            required
                            class="bg-white/10 border border-white/30 rounded-lg p-3 w-full text-white text-[15px] outline-none transition-all duration-300 focus:border-[#8B1A1A] focus:bg-white/15 placeholder-white/50">
                 </div>
-                
+
                 <!-- Email Field -->
                 <div class="mb-6">
                     <label for="email" class="block text-white/90 text-sm font-medium mb-2">Email Address</label>
-                    <input type="email" 
+                    <input type="email"
                            id="email"
-                           wire:model="identifier" 
-                           placeholder="Enter your email" 
+                           wire:model="identifier"
+                           placeholder="Enter your email"
                            required
                            class="bg-white/10 border border-white/30 rounded-lg p-3 w-full text-white text-[15px] outline-none transition-all duration-300 focus:border-[#8B1A1A] focus:bg-white/15 placeholder-white/50">
                 </div>
-                
+
                 <!-- Password Field -->
                 <div class="mb-6 relative" x-data="{ show: false }">
                     <label for="password" class="block text-white/90 text-sm font-medium mb-2">Password</label>
                     <div class="relative">
-                        <input :type="show ? 'text' : 'password'" 
+                        <input :type="show ? 'text' : 'password'"
                                id="password"
-                               wire:model="password" 
-                               placeholder="Min. 8 characters" 
-                               required 
+                               wire:model="password"
+                               placeholder="Min. 8 characters"
+                               required
                                class="w-full pr-12 bg-white/10 border border-white/30 rounded-lg p-3 text-white text-[15px] outline-none transition-all duration-300 focus:border-[#8B1A1A] focus:bg-white/15 placeholder-white/50">
-                        <button type="button" 
-                                @click="show = !show" 
+                        <button type="button"
+                                @click="show = !show"
                                 class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors focus:outline-none">
                             <!-- Eye Icon (Show) -->
                             <svg x-show="!show" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
