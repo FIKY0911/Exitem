@@ -14,6 +14,7 @@ class Navbar extends Component
     public string $search = '';
     public bool $dark = false;
     public $suggestions = [];
+    public bool $searching = false;
 
     #[On('cart-updated')]
     #[On('wishlist-updated')]
@@ -26,7 +27,9 @@ class Navbar extends Component
     public function updatedSearch()
     {
         if (strlen($this->search) >= 2) {
-            $this->suggestions = Product::where('name', 'like', '%' . $this->search . '%')
+            $this->searching = true;
+            $this->suggestions = Product::with('category')
+                ->where('name', 'like', '%' . $this->search . '%')
                 ->orWhere('about', 'like', '%' . $this->search . '%')
                 ->orWhereHas('category', function($q) {
                     $q->where('name', 'like', '%' . $this->search . '%');
@@ -35,10 +38,12 @@ class Navbar extends Component
                     $q->where('name', 'like', '%' . $this->search . '%');
                 })
                 ->limit(5)
-                ->get(['id', 'name', 'slug', 'price', 'thumbnail'])
+                ->get(['id', 'name', 'slug', 'price', 'thumbnail', 'category_id', 'stock'])
                 ->toArray();
+            $this->searching = false;
         } else {
             $this->suggestions = [];
+            $this->searching = false;
         }
     }
 
@@ -53,10 +58,7 @@ class Navbar extends Component
     public function logout()
     {
         \Illuminate\Support\Facades\Auth::guard('web')->logout();
-        
-        // Gunakan regenerate() alih-alih invalidate() agar sesi dari guard lain (seperti admin) tidak ikut terhapus.
         session()->regenerate();
-
         return redirect()->route('home');
     }
 

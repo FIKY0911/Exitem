@@ -8,12 +8,25 @@ use Livewire\Component;
 
 class MyOrders extends Component
 {
+    public string $activeStatus = '';
+
+    public function filterByStatus(string $status): void
+    {
+        $this->activeStatus = $this->activeStatus === $status ? '' : $status;
+    }
+
     public function render()
     {
         $orders = [];
         if (Auth::check()) {
             $orders = Transaction::where('email', Auth::user()->email)
                 ->with('product')
+                ->when($this->activeStatus === 'paid', function ($q) {
+                    $q->where('is_paid', true);
+                })
+                ->when($this->activeStatus === 'pending', function ($q) {
+                    $q->where('is_paid', false);
+                })
                 ->latest()
                 ->get();
         }

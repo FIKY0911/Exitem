@@ -2,55 +2,56 @@
     <livewire:components.navbar />
 
     {{-- Hero --}}
-    <section style="height:60vh; background:linear-gradient(rgba(0,0,0,0.65),rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1400') center/cover no-repeat; display:flex; align-items:center; justify-content:center; text-align:center; color:#fff;">
+    <section class="h-[60vh] flex items-center justify-center text-center text-white px-5"
+             style="background:linear-gradient(rgba(0,0,0,0.65),rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1400') center/cover no-repeat;">
         <div>
-            <h1 style="font-size:52px; font-weight:800; letter-spacing:-1px; margin-bottom:16px;">{{ $heroTitle }}</h1>
-            <p style="font-size:16px; opacity:0.85; max-width:500px; margin:0 auto;">{{ $heroSubtitle }}</p>
+            <h1 class="text-4xl sm:text-5xl lg:text-[52px] font-extrabold tracking-tight mb-4">{{ $heroTitle }}</h1>
+            <p class="text-sm sm:text-base text-white/85 max-w-[500px] mx-auto">{{ $heroSubtitle }}</p>
         </div>
     </section>
 
     {{-- Stats (Dynamic) --}}
-    <section style="background:#fff; box-shadow:0 4px 24px rgba(0,0,0,0.08); padding:32px 0;">
-        <div style="max-width:1170px; margin:0 auto; padding:0 20px; display:grid; grid-template-columns:repeat({{ count($stats) }},1fr); gap:0;">
+    <section class="bg-white shadow-[0_4px_24px_rgba(0,0,0,0.08)] py-8">
+        <div class="max-w-[1170px] mx-auto px-5 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0">
             @foreach($stats as $i => $s)
-            <div style="text-align:center; padding:24px; {{ $i < count($stats)-1 ? 'border-right:1px solid #f0f0f0;' : '' }}">
-                <div style="font-size:40px; font-weight:800; color:#DB4444; line-height:1;">{{ $s['value'] }}</div>
-                <div style="font-size:14px; color:#666; margin-top:8px;">{{ $s['label'] }}</div>
+            <div class="text-center p-6 {{ $i < count($stats)-1 ? 'sm:border-r sm:border-[#f0f0f0]' : '' }}">
+                <div class="text-4xl sm:text-5xl font-extrabold text-[#DB4444] leading-none">{{ $s['value'] }}</div>
+                <div class="text-sm text-[#666] mt-2">{{ $s['label'] }}</div>
             </div>
             @endforeach
         </div>
     </section>
 
-    <main style="max-width:1170px; margin:0 auto; padding:80px 20px; flex:1; width:100%;">
+    <main class="max-w-[1170px] mx-auto px-5 py-16 sm:py-20 flex-1 w-full">
 
         {{-- Who We Are (Dynamic) --}}
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:center; margin-bottom:80px;">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center mb-16 md:mb-20">
             <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600" alt="Team"
-                 style="width:100%; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.12);">
+                 class="w-full rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
             <div>
-                <p style="color:#DB4444; font-weight:700; font-size:12px; letter-spacing:2px; text-transform:uppercase; margin-bottom:16px;">● WHO WE ARE ●</p>
-                <h2 style="font-size:32px; font-weight:700; color:#111; margin-bottom:24px; line-height:1.2;">{{ $storyHeadline }}</h2>
+                <p class="text-[#DB4444] font-bold text-[12px] tracking-[2px] uppercase mb-4">● WHO WE ARE ●</p>
+                <h2 class="text-2xl sm:text-3xl font-bold text-[#111] mb-6 leading-tight">{{ $storyHeadline }}</h2>
                 @if($storyText1)
-                <p style="font-size:14px; line-height:1.9; color:#666; margin-bottom:16px;">{{ $storyText1 }}</p>
+                <p class="text-sm sm:text-base leading-relaxed text-[#666] mb-4">{{ $storyText1 }}</p>
                 @endif
                 @if($storyText2)
-                <p style="font-size:14px; line-height:1.9; color:#666;">{{ $storyText2 }}</p>
+                <p class="text-sm sm:text-base leading-relaxed text-[#666]">{{ $storyText2 }}</p>
                 @endif
             </div>
         </div>
 
         {{-- Vision & Mission (Dynamic) --}}
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:80px;">
-            <div style="background:#fff; border:1px solid #f0f0f0; border-radius:12px; padding:40px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                <div style="font-size:40px; margin-bottom:16px;">👁️</div>
-                <h3 style="font-size:20px; font-weight:700; color:#111; margin-bottom:16px;">Our Vision</h3>
-                <p style="font-size:14px; color:#666; line-height:1.8;">{{ $vision }}</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16 md:mb-20">
+            <div class="bg-white border border-[#f0f0f0] rounded-xl p-8 sm:p-10 text-center shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+                <div class="text-4xl mb-4">👁️</div>
+                <h3 class="text-lg sm:text-xl font-bold text-[#111] mb-4">Our Vision</h3>
+                <p class="text-sm sm:text-base text-[#666] leading-relaxed">{{ $vision }}</p>
             </div>
-            <div style="background:#fff; border:1px solid #f0f0f0; border-radius:12px; padding:40px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                <div style="font-size:40px; margin-bottom:16px;">🚀</div>
-                <h3 style="font-size:20px; font-weight:700; color:#111; margin-bottom:16px;">Our Mission</h3>
+            <div class="bg-white border border-[#f0f0f0] rounded-xl p-8 sm:p-10 text-center shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+                <div class="text-4xl mb-4">🚀</div>
+                <h3 class="text-lg sm:text-xl font-bold text-[#111] mb-4">Our Mission</h3>
                 @if(count($mission))
-                <ul style="font-size:14px; color:#666; line-height:2; text-align:left; padding-left:20px;">
+                <ul class="text-sm sm:text-base text-[#666] leading-relaxed text-left pl-5 space-y-2">
                     @foreach($mission as $item)
                     <li>{{ $item }}</li>
                     @endforeach
@@ -61,62 +62,71 @@
 
         {{-- Team (Dynamic from DB) --}}
         @if($teamMembers->count())
-        <section style="background:#1a1a1a; border-radius:16px; padding:60px 40px; margin-bottom:80px;"
+        <section class="bg-[#1a1a1a] rounded-2xl p-8 sm:p-10 lg:p-[60px_40px] mb-16 md:mb-20"
                  x-data="{
                      slide: 0,
                      total: {{ $teamMembers->count() }},
-                     perPage: 3,
+                     perPage: 1,
                      timer: null,
                      startAuto() { this.timer = setInterval(() => this.next(), 3000); },
                      stopAuto()  { clearInterval(this.timer); },
-                     next() { this.slide = (this.slide + 1) % this.total; },
-                     prev() { this.slide = (this.slide - 1 + this.total) % this.total; },
+                     next() { this.slide = (this.slide + 1) % Math.ceil(this.total / this.perPage); },
+                     prev() { const max = Math.ceil(this.total / this.perPage); this.slide = (this.slide - 1 + max) % max; },
+                     get visible() {
+                         const start = this.slide * this.perPage;
+                         return Array.from({ length: this.total }, (_, i) => i).slice(start, start + this.perPage);
+                     }
                  }"
-                 x-init="startAuto()">
-            <div style="text-align:center; margin-bottom:40px;">
-                <p style="color:#DB4444; font-weight:700; font-size:12px; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;">OUR TEAM</p>
-                <h2 style="font-size:32px; font-weight:700; color:#fff;">Meet The Team</h2>
+                 x-init="
+                     perPage = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1;
+                     $watch('slide', () => {});
+                     startAuto();
+                 "
+                 @resize.window="
+                     perPage = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1;
+                     const max = Math.ceil(total / perPage);
+                     if (slide >= max) slide = max - 1;
+                 ">
+            <div class="text-center mb-10">
+                <p class="text-[#DB4444] font-bold text-[12px] tracking-[2px] uppercase mb-3">OUR TEAM</p>
+                <h2 class="text-2xl sm:text-3xl font-bold text-white">Meet The Team</h2>
             </div>
 
             {{-- Slider + Arrows --}}
-            <div style="position:relative;">
+            <div class="relative px-0 sm:px-6">
                 {{-- Left Arrow --}}
                 <button @click="stopAuto(); prev(); startAuto()"
-                        style="position:absolute; left:-20px; top:50%; transform:translateY(-50%); z-index:10;
-                               width:44px; height:44px; border-radius:50%; background:#333; border:none; cursor:pointer;
-                               display:flex; align-items:center; justify-content:center; color:#fff; transition:background 0.2s;"
-                        onmouseover="this.style.background='#DB4444'" onmouseout="this.style.background='#333'">
+                        class="absolute left-0 sm:-left-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-[#333] border-none cursor-pointer flex items-center justify-center text-white transition-colors duration-200 hover:bg-[#DB4444]">
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
                 </button>
 
-                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:24px; overflow:hidden;">
-                    @foreach($teamMembers as $i => $member)
-                    <div x-show="{{ $i }} >= slide && {{ $i }} < slide + 3"
-                         x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 translate-x-4"
-                         x-transition:enter-end="opacity-100 translate-x-0"
-                         style="background:#2a2a2a; border-radius:12px; padding:32px 24px; text-align:center;">
-                        <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;margin:0 auto 16px;background:#DB4444;display:flex;align-items:center;justify-content:center;">
-                            @if($member->photo)
-                            <img src="{{ asset('storage/'.$member->photo) }}" style="width:100%;height:100%;object-fit:cover;">
-                            @else
-                            <span style="color:#fff;font-size:28px;font-weight:700;">{{ strtoupper(substr($member->name,0,1)) }}</span>
-                            @endif
+                <div class="overflow-hidden">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @foreach($teamMembers as $i => $member)
+                        <div x-show="Math.floor({{ $i }} / perPage) === slide"
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="opacity-0 translate-x-4"
+                             x-transition:enter-end="opacity-100 translate-x-0"
+                             class="bg-[#2a2a2a] rounded-xl p-8 text-center">
+                            <div class="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 bg-[#DB4444] flex items-center justify-center">
+                                @if($member->photo)
+                                <img src="{{ asset('storage/'.$member->photo) }}" class="w-full h-full object-cover">
+                                @else
+                                <span class="text-white text-2xl font-bold">{{ strtoupper(substr($member->name,0,1)) }}</span>
+                                @endif
+                            </div>
+                            <h4 class="text-base font-semibold text-white mb-1.5">{{ $member->name }}</h4>
+                            <p class="text-[13px] text-[#aaa]">{{ $member->role }}</p>
                         </div>
-                        <h4 style="font-size:16px;font-weight:600;color:#fff;margin-bottom:6px;">{{ $member->name }}</h4>
-                        <p style="font-size:13px;color:#aaa;margin-bottom:16px;">{{ $member->role }}</p>
+                        @endforeach
                     </div>
-                    @endforeach
                 </div>
 
                 {{-- Right Arrow --}}
                 <button @click="stopAuto(); next(); startAuto()"
-                        style="position:absolute; right:-20px; top:50%; transform:translateY(-50%); z-index:10;
-                               width:44px; height:44px; border-radius:50%; background:#333; border:none; cursor:pointer;
-                               display:flex; align-items:center; justify-content:center; color:#fff; transition:background 0.2s;"
-                        onmouseover="this.style.background='#DB4444'" onmouseout="this.style.background='#333'">
+                        class="absolute right-0 sm:-right-5 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-[#333] border-none cursor-pointer flex items-center justify-center text-white transition-colors duration-200 hover:bg-[#DB4444]">
                     <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
@@ -124,11 +134,11 @@
             </div>
 
             {{-- Dots --}}
-            <div style="display:flex;justify-content:center;gap:8px;margin-top:32px;">
+            <div class="flex justify-center gap-2 mt-8">
                 @foreach($teamMembers as $i => $member)
-                <button @click="slide = {{ $i }}"
-                        :style="slide === {{ $i }} ? 'background:#DB4444;' : 'background:#555;'"
-                        style="width:10px;height:10px;border-radius:50%;border:none;cursor:pointer;transition:background 0.2s;"></button>
+                <button @click="slide = Math.floor({{ $i }} / perPage)"
+                        :style="Math.floor({{ $i }} / perPage) === slide ? 'background:#DB4444;' : 'background:#555;'"
+                        class="w-2.5 h-2.5 rounded-full border-none cursor-pointer transition-colors duration-200"></button>
                 @endforeach
             </div>
         </section>

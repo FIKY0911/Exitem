@@ -1,23 +1,23 @@
-<div class="flex flex-col min-h-screen" style="background: #faf8f5;">
+<div class="flex flex-col min-h-screen bg-[#faf8f5]">
     <livewire:components.navbar />
 
-    <main style="padding: 3.5rem 0; flex: 1;">
-        <div style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+    <main class="py-10 sm:py-14 flex-1">
+        <div class="max-w-[1200px] mx-auto px-4 sm:px-8">
 
-            <p style="font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #9ca3af; margin-bottom: 2.5rem; font-weight: 600;">
-                Home <span style="margin: 0 0.5rem; color: #d1d5db;">/</span> Account <span style="margin: 0 0.5rem; color: #d1d5db;">/</span> <span style="color: #DB4444;">My Collection</span>
+            <p class="text-[11px] tracking-[0.15em] uppercase text-gray-400 mb-6 sm:mb-10 font-semibold">
+                Home <span class="mx-1.5 text-gray-300">/</span> Account <span class="mx-1.5 text-gray-300">/</span> <span class="text-[#DB4444]">My Collection</span>
             </p>
 
-            <div style="display: flex; gap: 2rem; align-items: flex-start;">
+            <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
                 <x-account-sidebar />
 
-                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1.5rem;">
-                    <div style="background: #fff; border-radius: 1.25rem; border: 1px solid #e5e7eb; box-shadow: 0 2px 20px rgba(0,0,0,0.05); overflow: hidden;">
-                        <div style="height: 5px; background: linear-gradient(90deg, #DB4444, #e8704a);"></div>
-                        <div style="padding: 2.5rem;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;">
-                                <div style="width: 4px; height: 24px; border-radius: 9999px; background: #DB4444;"></div>
-                                <h2 style="font-size: 1.125rem; font-weight: 800; color: #111827;">My Collection</h2>
+                <div class="flex-1 min-w-0 flex flex-col gap-4 sm:gap-6 w-full">
+                    <div class="bg-white rounded-2xl border border-gray-200 shadow-[0_2px_20px_rgba(0,0,0,0.05)] overflow-hidden">
+                        <div class="h-[5px] bg-gradient-to-r from-[#DB4444] to-[#e8704a]"></div>
+                        <div class="p-5 sm:p-8 lg:p-10">
+                            <div class="flex items-center gap-3 mb-6 sm:mb-8">
+                                <div class="w-1 h-6 rounded-full bg-[#DB4444]"></div>
+                                <h2 class="text-base sm:text-lg font-extrabold text-gray-900">My Collection</h2>
                             </div>
 
                             @if($collection->count())

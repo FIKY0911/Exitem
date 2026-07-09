@@ -2,22 +2,23 @@
     <livewire:components.navbar />
 
     {{-- Hero --}}
-    <section style="height:50vh; background:linear-gradient(rgba(0,0,0,0.65),rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1400') center/cover no-repeat; display:flex; align-items:center; color:#fff; padding:0 10%;">
+    <section class="h-[50vh] flex items-center text-white px-5 sm:px-10 lg:px-[10%]"
+             style="background:linear-gradient(rgba(0,0,0,0.65),rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1400') center/cover no-repeat;">
         <div>
-            <h1 style="font-size:52px; font-weight:800; margin-bottom:16px; letter-spacing:-1px;">Contact Us</h1>
-            <p style="font-size:16px; opacity:0.85; max-width:480px; line-height:1.7;">Kami siap membantu Anda. Sampaikan pesan, pertanyaan, atau masukan Anda kepada kami.</p>
+            <h1 class="text-4xl sm:text-5xl lg:text-[52px] font-extrabold mb-4 tracking-tight">Contact Us</h1>
+            <p class="text-sm sm:text-base text-white/85 max-w-[480px] leading-relaxed">Kami siap membantu Anda. Sampaikan pesan, pertanyaan, atau masukan Anda kepada kami.</p>
         </div>
     </section>
 
     {{-- Contact Card --}}
-    <main style="max-width:1170px; margin:-60px auto 80px; padding:0 20px; width:100%; position:relative; z-index:10;">
-        <div style="background:#fff; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.12); overflow:hidden; display:grid; grid-template-columns:1fr 380px;">
+    <main class="max-w-[1170px] w-full mx-auto px-4 sm:px-5 relative z-10 -mt-10 sm:-mt-16 mb-20">
+        <div class="bg-white rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.12)] overflow-hidden grid grid-cols-1 lg:grid-cols-[1fr_380px]">
 
             {{-- Left: Form --}}
-            <div style="padding:56px 48px;">
+            <div class="p-6 sm:p-10 lg:p-14">
 
-                <p style="color:#DB4444; font-weight:700; font-size:12px; letter-spacing:2px; text-transform:uppercase; margin-bottom:12px;">● MESSAGE ●</p>
-                <h2 style="font-size:28px; font-weight:700; color:#111; margin-bottom:32px;">Send Us A Message</h2>
+                <p class="text-[#DB4444] font-bold text-[12px] tracking-[2px] uppercase mb-3">● MESSAGE ●</p>
+                <h2 class="text-2xl sm:text-[28px] font-bold text-[#111] mb-8">Send Us A Message</h2>
 
                 @if(session('success'))
                 <div x-data="{ show: true }" x-show="show"
@@ -25,51 +26,48 @@
                      x-transition:leave="transition ease-in duration-300"
                      x-transition:leave-start="opacity-100"
                      x-transition:leave-end="opacity-0"
-                     style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:14px 16px; font-size:13px; color:#166534; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center;">
+                     class="bg-green-50 border border-green-200 rounded-lg px-4 py-3.5 text-sm text-green-800 mb-6 flex justify-between items-center">
                     {{ session('success') }}
-                    <button @click="show=false" style="background:none;border:none;cursor:pointer;color:#166534;font-size:16px;">✕</button>
+                    <button @click="show=false" class="bg-none border-none cursor-pointer text-green-800 text-base">&times;</button>
                 </div>
                 @endif
 
-                @php $inp = "width:100%; padding:14px 16px; border:1.5px solid #eee; border-radius:8px; font-size:14px; outline:none; box-sizing:border-box; transition:border 0.2s; background:#fdfdfd; color:#333;"; @endphp
+                @php
+                    $inp = "w-full p-3.5 sm:p-4 border-2 border-[#eee] rounded-lg text-sm outline-none transition-[border] duration-200 bg-[#fdfdfd] text-[#333] focus:border-[#DB4444] placeholder-gray-400";
+                @endphp
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <input wire:model="name" type="text" placeholder="Your Name *" style="{{ $inp }}"
-                               onfocus="this.style.borderColor='#DB4444'" onblur="this.style.borderColor='#eee'">
-                        @error('name') <p style="font-size:11px;color:#DB4444;margin-top:4px;">{{ $message }}</p> @enderror
+                        <input wire:model="name" type="text" placeholder="Your Name *" class="{{ $inp }}">
+                        @error('name') <p class="text-[11px] text-[#DB4444] mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <input wire:model="email" type="email" placeholder="Your Email *" style="{{ $inp }}"
-                               onfocus="this.style.borderColor='#DB4444'" onblur="this.style.borderColor='#eee'">
-                        @error('email') <p style="font-size:11px;color:#DB4444;margin-top:4px;">{{ $message }}</p> @enderror
+                        <input wire:model="email" type="email" placeholder="Your Email *" class="{{ $inp }}">
+                        @error('email') <p class="text-[11px] text-[#DB4444] mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
-                <div style="margin-bottom:16px;">
-                    <input wire:model="phone" type="text" placeholder="Your Phone / Subject" style="{{ $inp }}"
-                           onfocus="this.style.borderColor='#DB4444'" onblur="this.style.borderColor='#eee'">
+                <div class="mb-4">
+                    <input wire:model="phone" type="text" placeholder="Your Phone / Subject" class="{{ $inp }}">
                 </div>
 
-                <div style="margin-bottom:28px;">
+                <div class="mb-7">
                     <textarea wire:model="message" rows="6" placeholder="Your Message *"
-                              style="{{ $inp }} resize:vertical;"
-                              onfocus="this.style.borderColor='#DB4444'" onblur="this.style.borderColor='#eee'"></textarea>
-                    @error('message') <p style="font-size:11px;color:#DB4444;margin-top:4px;">{{ $message }}</p> @enderror
+                              class="{{ $inp }} resize-y"></textarea>
+                    @error('message') <p class="text-[11px] text-[#DB4444] mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <button wire:click="send" wire:loading.attr="disabled" wire:loading.class="opacity-70"
-                        style="padding:14px 48px; background:#DB4444; color:#fff; border:none; border-radius:8px; font-size:15px; font-weight:600; cursor:pointer; transition:background 0.2s; letter-spacing:0.3px;"
-                        onmouseover="this.style.background='#c83333'" onmouseout="this.style.background='#DB4444'">
+                        class="px-10 sm:px-12 py-3.5 sm:py-3.5 bg-[#DB4444] text-white border-none rounded-lg text-sm sm:text-[15px] font-semibold cursor-pointer transition-colors duration-200 tracking-[0.3px] hover:bg-[#c83333]">
                     <span wire:loading.remove>Submit Message</span>
                     <span wire:loading>Sending...</span>
                 </button>
             </div>
 
             {{-- Right: Info --}}
-            <div style="background:#1a1a1a; padding:56px 40px; display:flex; flex-direction:column; gap:32px;">
+            <div class="bg-[#1a1a1a] p-8 sm:p-10 lg:p-14 flex flex-col gap-8">
                 <div>
-                    <p style="color:#DB4444; font-weight:700; font-size:12px; letter-spacing:2px; text-transform:uppercase; margin-bottom:20px;">GET IN TOUCH</p>
+                    <p class="text-[#DB4444] font-bold text-[12px] tracking-[2px] uppercase mb-5">GET IN TOUCH</p>
                 </div>
 
                 @foreach([
@@ -77,21 +75,21 @@
                     ['📞', 'Phone Call',    '+62 812 3456 7890'],
                     ['✉️', 'Email Us',      'support@exitem.com<br>customer@exitem.com'],
                 ] as $info)
-                <div style="display:flex; gap:16px; align-items:flex-start;">
-                    <div style="width:44px;height:44px;background:#DB4444;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">{{ $info[0] }}</div>
+                <div class="flex gap-4 items-start">
+                    <div class="w-11 h-11 bg-[#DB4444] rounded-full flex items-center justify-center text-lg shrink-0">{{ $info[0] }}</div>
                     <div>
-                        <h4 style="font-size:14px;font-weight:600;color:#fff;margin-bottom:6px;">{{ $info[1] }}</h4>
-                        <p style="font-size:13px;color:#aaa;line-height:1.7;">{!! $info[2] !!}</p>
+                        <h4 class="text-sm font-semibold text-white mb-1.5">{{ $info[1] }}</h4>
+                        <p class="text-[13px] text-[#aaa] leading-relaxed">{!! $info[2] !!}</p>
                     </div>
                 </div>
                 @endforeach
 
-                <div style="margin-top:auto; padding-top:32px; border-top:1px solid #333;">
-                    <p style="font-size:12px; color:#666; margin-bottom:16px;">Follow Us</p>
-                    <div style="display:flex; gap:10px;">
+                <div class="mt-auto pt-8 border-t border-[#333]">
+                    <p class="text-xs text-[#666] mb-4">Follow Us</p>
+                    <div class="flex gap-2.5">
                         @foreach(['T','I','F','L'] as $s)
-                        <a href="#" style="width:36px;height:36px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600;text-decoration:none;transition:background 0.2s;"
-                           onmouseover="this.style.background='#DB4444'" onmouseout="this.style.background='#333'">{{ $s }}</a>
+                        <a href="#"
+                           class="w-9 h-9 rounded-full bg-[#333] flex items-center justify-center text-white text-xs font-semibold no-underline transition-colors duration-200 hover:bg-[#DB4444]">{{ $s }}</a>
                         @endforeach
                     </div>
                 </div>

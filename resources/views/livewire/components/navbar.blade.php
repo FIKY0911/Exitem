@@ -1,4 +1,32 @@
-<header class="{{ $dark ? 'bg-black text-white border-b border-white/10' : 'bg-white text-black border-b border-gray-200' }} sticky top-0 z-50 transition-colors duration-300" x-data="{ mobileMenuOpen: false, searchOpen: false }">
+@php
+    $highlight = function($text, $query) {
+        if (!trim($query)) return e($text);
+        return preg_replace('/(' . preg_quote($query, '/') . ')/iu', '<span class="text-[#DB4444] font-semibold">$1</span>', e($text));
+    };
+@endphp
+
+<header class="{{ $dark ? 'bg-black text-white border-b border-white/10' : 'bg-white text-black border-b border-gray-200' }} sticky top-0 z-50 transition-colors duration-300"
+        x-data="{
+            mobileMenuOpen: false,
+            searchOpen: false,
+            searchFocused: false,
+            recentSearches: JSON.parse(localStorage.getItem('recent_searches') || '[]'),
+            saveSearch(query) {
+                if (!query.trim()) return;
+                let list = this.recentSearches.filter(s => s.toLowerCase() !== query.toLowerCase());
+                list.unshift(query);
+                this.recentSearches = list.slice(0, 5);
+                localStorage.setItem('recent_searches', JSON.stringify(this.recentSearches));
+            },
+            removeSearch(index) {
+                this.recentSearches.splice(index, 1);
+                localStorage.setItem('recent_searches', JSON.stringify(this.recentSearches));
+            },
+            clearSearches() {
+                this.recentSearches = [];
+                localStorage.removeItem('recent_searches');
+            }
+        }">
     {{-- Promo banner: hidden on mobile --}}
     <div class="hidden md:block bg-black text-white text-center py-2 text-sm px-4">
         <p>Diskon Musim Panas Semua Baju Renang Dan Gratis Ongkir - DISKON 50%! <a href="#" class="font-bold underline ml-2">Belanja Sekarang</a></p>
@@ -76,35 +104,80 @@
         <div class="flex items-center gap-4 sm:gap-5">
 
             {{-- Desktop Search Box (ONLY visible md and above) --}}
-            <div class="hidden md:block relative" x-data="{ showSuggestions: @entangle('suggestions').live }">
-                <!-- Search Box dengan Tailwind utilities -->
+            <div class="hidden md:block relative"
+                 x-data="{ showSuggestions: @entangle('suggestions').live }"
+                 @click.away="searchFocused = false">
                 <div class="flex items-center bg-gray-100 rounded-full px-4 py-1.5 border border-transparent transition-all duration-300 ease-in-out focus-within:bg-white focus-within:border-[#DB4444] focus-within:shadow-[0_4px_12px_rgba(219,68,68,0.15)]">
                     <input type="text" 
                            wire:model.live.debounce.300ms="search" 
-                           wire:keydown.enter="performSearch" 
+                           wire:keydown.enter="performSearch(); saveSearch($wire.search)"
+                           @focus="searchFocused = true"
+                           @blur="setTimeout(() => searchFocused = false, 200)"
                            placeholder="Apa yang Anda cari?" 
                            class="bg-transparent border-none outline-none px-2 py-1.5 w-full max-w-[200px] transition-all duration-300 ease-in-out text-sm text-black placeholder-gray-500 focus:max-w-[260px]">
                     <svg class="w-5 h-5 text-gray-500 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                 </div>
+
+                {{-- Recent Searches --}}
+                <template x-if="searchFocused && !$wire.search && recentSearches.length">
+                    <div class="absolute top-full mt-2 w-[360px] bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-50 overflow-hidden border border-gray-100">
+                        <div class="flex items-center justify-between px-4 pt-3 pb-1.5">
+                            <span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Recent</span>
+                            <button @click="clearSearches()" class="text-[10px] text-gray-400 hover:text-[#DB4444] font-semibold">Clear</button>
+                        </div>
+                        <template x-for="(q, i) in recentSearches" :key="i">
+                            <a :href="'{{ route('search') }}?q=' + encodeURIComponent(q)"
+                               class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors group border-b border-gray-50 last:border-0">
+                                <svg class="w-4 h-4 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span class="text-sm text-gray-600 flex-1 truncate" x-text="q"></span>
+                                <button @click.prevent.stop="removeSearch(i)" class="text-gray-300 hover:text-[#DB4444] transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </a>
+                        </template>
+                    </div>
+                </template>
                 
-                @if(count($suggestions) > 0)
-                <div class="absolute top-full mt-3 w-full bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-50 overflow-hidden border border-gray-100 py-2">
+                @if(strlen($search) >= 2 && count($suggestions) > 0)
+                <div class="absolute top-full mt-2 w-[360px] bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-50 overflow-hidden border border-gray-100">
+                    <div class="px-4 pt-3 pb-1.5 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Products</div>
                     @foreach($suggestions as $product)
                     <a href="{{ route('product.detail', $product['slug']) }}" 
-                       class="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition-all duration-200 group">
-                        <div class="relative w-14 h-14 shrink-0 overflow-hidden rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center">
+                       @click="saveSearch('{{ $product['name'] }}')"
+                       class="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-all duration-200 group border-b border-gray-50 last:border-0">
+                        <div class="relative w-12 h-12 shrink-0 overflow-hidden rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center">
                             <img src="{{ $product['thumbnail'] ? asset('storage/' . $product['thumbnail']) : '/images/placeholder.jpg' }}" 
                                  class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" 
                                  alt="{{ $product['name'] }}">
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-[15px] font-medium text-gray-900 truncate">{{ $product['name'] }}</p>
-                            <p class="text-sm font-semibold text-[var(--primary-red)] mt-0.5">Rp {{ number_format($product['price'], 0, ',', '.') }}</p>
+                            <p class="text-sm font-medium text-gray-900 truncate">{!! $highlight($product['name'], $search) !!}</p>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="text-xs font-semibold text-[#DB4444]">Rp {{ number_format($product['price'], 0, ',', '.') }}</span>
+                                @if(!empty($product['category']['name']))
+                                <span class="text-[10px] text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">{{ $product['category']['name'] }}</span>
+                                @endif
+                            </div>
                         </div>
                     </a>
                     @endforeach
+                </div>
+                @elseif(strlen($search) >= 2 && $searching)
+                <div class="absolute top-full mt-2 w-full bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-50 overflow-hidden border border-gray-100">
+                    <div class="flex items-center justify-center gap-2 px-4 py-6 text-sm text-gray-400">
+                        <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+                        Searching...
+                    </div>
+                </div>
+                @elseif(strlen($search) >= 2 && !count($suggestions))
+                <div class="absolute top-full mt-2 w-full bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-50 overflow-hidden border border-gray-100">
+                    <div class="flex flex-col items-center justify-center px-4 py-8 text-sm text-gray-400">
+                        <svg class="w-10 h-10 text-gray-200 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <p>No products found for <strong class="text-gray-500">"{{ $search }}"</strong></p>
+                        <p class="text-xs mt-1">Try using different keywords</p>
+                    </div>
                 </div>
                 @endif
             </div>
@@ -239,7 +312,7 @@
                 <svg class="w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <input type="text" wire:model.live.debounce.300ms="search" wire:keydown.enter="performSearch" placeholder="What are you looking for?"
+                <input type="text" wire:model.live.debounce.300ms="search" wire:keydown.enter="performSearch(); saveSearch($wire.search)" placeholder="What are you looking for?"
                        class="flex-1 min-w-0 bg-transparent outline-none mx-2 text-black placeholder-gray-500"
                        x-ref="searchInput"
                        x-init="$watch('searchOpen', val => val && $nextTick(() => $refs.searchInput.focus()))">
@@ -250,23 +323,65 @@
                 </button>
             </div>
         </div>
+
+        {{-- Mobile Recent Searches --}}
+        <template x-if="!$wire.search && recentSearches.length">
+            <div class="border-t {{ $dark ? 'border-white/10' : 'border-gray-100' }}">
+                <div class="flex items-center justify-between px-4 pt-3 pb-1.5">
+                    <span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Recent</span>
+                    <button @click="clearSearches()" class="text-[10px] text-gray-400 hover:text-[#DB4444] font-semibold">Clear</button>
+                </div>
+                <template x-for="(q, i) in recentSearches" :key="i">
+                    <a :href="'{{ route('search') }}?q=' + encodeURIComponent(q)"
+                       class="flex items-center gap-3 px-4 py-2.5 {{ $dark ? 'hover:bg-white/5' : 'hover:bg-gray-50' }} transition-colors border-b border-gray-50 last:border-0">
+                        <svg class="w-4 h-4 text-gray-300 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span class="text-sm {{ $dark ? 'text-white' : 'text-gray-600' }} flex-1 truncate" x-text="q"></span>
+                        <button @click.prevent.stop="removeSearch(i)" class="text-gray-300 hover:text-[#DB4444] transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </a>
+                </template>
+            </div>
+        </template>
         
-        @if(count($suggestions) > 0)
-        <div class="border-t {{ $dark ? 'border-white/10' : 'border-gray-100' }} py-2">
+        @if(strlen($search) >= 2 && count($suggestions) > 0)
+        <div class="border-t {{ $dark ? 'border-white/10' : 'border-gray-100' }}">
+            <div class="px-4 pt-3 pb-1 text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">Products</div>
             @foreach($suggestions as $product)
             <a href="{{ route('product.detail', $product['slug']) }}" 
-               class="flex items-center gap-4 px-4 py-3 {{ $dark ? 'hover:bg-white/5' : 'hover:bg-gray-50' }} transition-colors group">
-                <div class="relative w-14 h-14 shrink-0 overflow-hidden rounded-md {{ $dark ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100' }} border flex items-center justify-center">
+               @click="saveSearch('{{ $product['name'] }}')"
+               class="flex items-center gap-3 px-4 py-2.5 {{ $dark ? 'hover:bg-white/5' : 'hover:bg-gray-50' }} transition-colors group border-b border-gray-50 last:border-0">
+                <div class="relative w-12 h-12 shrink-0 overflow-hidden rounded-lg {{ $dark ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-100' }} border flex items-center justify-center">
                     <img src="{{ $product['thumbnail'] ? asset('storage/' . $product['thumbnail']) : '/images/placeholder.jpg' }}" 
                          class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" 
                          alt="{{ $product['name'] }}">
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-[15px] font-medium truncate {{ $dark ? 'text-white' : 'text-gray-900' }}">{{ $product['name'] }}</p>
-                    <p class="text-sm font-semibold text-[var(--primary-red)] mt-0.5">Rp {{ number_format($product['price'], 0, ',', '.') }}</p>
+                    <p class="text-sm font-medium truncate {{ $dark ? 'text-white' : 'text-gray-900' }}">{!! $highlight($product['name'], $search) !!}</p>
+                    <div class="flex items-center gap-2 mt-0.5">
+                        <span class="text-xs font-semibold text-[#DB4444]">Rp {{ number_format($product['price'], 0, ',', '.') }}</span>
+                        @if(!empty($product['category']['name']))
+                        <span class="text-[10px] text-gray-400 {{ $dark ? 'bg-white/10' : 'bg-gray-100' }} px-1.5 py-0.5 rounded">{{ $product['category']['name'] }}</span>
+                        @endif
+                    </div>
                 </div>
             </a>
             @endforeach
+        </div>
+        @elseif(strlen($search) >= 2 && $searching)
+        <div class="border-t {{ $dark ? 'border-white/10' : 'border-gray-100' }}">
+            <div class="flex items-center justify-center gap-2 px-4 py-6 text-sm text-gray-400">
+                <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+                Searching...
+            </div>
+        </div>
+        @elseif(strlen($search) >= 2 && !count($suggestions))
+        <div class="border-t {{ $dark ? 'border-white/10' : 'border-gray-100' }}">
+            <div class="flex flex-col items-center justify-center px-4 py-8 text-sm text-gray-400">
+                <svg class="w-10 h-10 text-gray-200 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <p>No products found for <strong class="text-gray-500">"{{ $search }}"</strong></p>
+                <p class="text-xs mt-1">Try using different keywords</p>
+            </div>
         </div>
         @endif
     </div>

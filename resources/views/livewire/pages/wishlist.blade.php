@@ -4,16 +4,46 @@
     <main class="max-w-[1170px] mx-auto px-5 py-10 flex-1">
 
         {{-- Header --}}
-        <div class="flex items-center justify-between mb-8">
+        <div class="mb-6">
             <h2 class="text-xl font-medium">Wishlist ({{ $wishlistItems->count() }})</h2>
+        </div>
+
+        {{-- Move All To Bag --}}
+        @if($wishlistItems->count())
+        <div class="bg-gray-50 rounded-lg px-6 py-4 flex items-center justify-between mb-8 border border-gray-200">
+            <p class="text-sm text-gray-500">{{ $wishlistItems->count() }} item(s) in your wishlist</p>
             <form method="POST" action="{{ route('wishlist.move-all') }}">
                 @csrf
                 <button type="submit"
-                        class="px-6 py-3 border border-black rounded text-sm font-medium hover:bg-black hover:text-white transition-colors">
+                        class="px-6 py-2.5 bg-[#DB4444] text-white rounded text-sm font-medium hover:bg-red-600 transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
                     Move All To Bag
                 </button>
             </form>
         </div>
+        @endif
+
+        {{-- Category Filter --}}
+        @if($categories->count())
+        <div class="overflow-x-auto scrollbar-hide -mx-5 px-5 mb-6">
+            <div class="flex gap-2 min-w-max pb-2">
+                <button wire:click="filterByCategory('')"
+                        class="px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors
+                               {{ !$activeCategory ? 'bg-[#DB4444] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">
+                    All
+                </button>
+                @foreach($categories as $cat)
+                <button wire:click="filterByCategory('{{ $cat->slug }}')"
+                        class="px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors
+                               {{ $activeCategory === $cat->slug ? 'bg-[#DB4444] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200' }}">
+                    {{ $cat->name }}
+                </button>
+                @endforeach
+            </div>
+        </div>
+        @endif
 
         {{-- Wishlist Grid --}}
         @if($wishlistItems->count())
