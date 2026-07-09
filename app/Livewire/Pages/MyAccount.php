@@ -4,6 +4,7 @@ namespace App\Livewire\Pages;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -72,34 +73,37 @@ class MyAccount extends Component
 
     public function sendResetLink()
     {
+        $user = Auth::user();
+        $key = 'send-otp:' . $user->email;
+
+        if (RateLimiter::tooManyAttempts($key, 3)) {
+            session()->flash('password_error', 'Too many OTP requests. Please try again later.');
+            return;
+        }
+
+        RateLimiter::hit($key, 600);
+
         try {
-            $user = Auth::user();
-            
-            // Generate 6 digit OTP
             $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            
-            // Delete old OTP for this email
+
             \DB::table('password_reset_otps')->where('email', $user->email)->delete();
-            
-            // Store OTP in database
+
             \DB::table('password_reset_otps')->insert([
                 'email' => $user->email,
                 'otp' => $otp,
-                'expires_at' => now()->addMinutes(10),
+                'expires_at' => now()->addMinutes(3),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
-            
-            // Send OTP via email
+
             $verificationUrl = route('verify-reset-otp', [
                 'email' => $user->email,
                 'otp' => $otp,
             ]);
             \Mail::to($user->email)->send(new \App\Mail\ResetPasswordOtpMail($otp, $user->name, $verificationUrl));
-            
+
             session()->flash('password_message', 'An OTP has been sent to your email (' . $user->email . '). Please check your inbox.');
-            
-            // Redirect to OTP verification page with email
+
             return redirect()->route('verify-reset-otp', ['email' => $user->email]);
         } catch (\Exception $e) {
             session()->flash('password_error', 'Failed to send OTP: ' . $e->getMessage());

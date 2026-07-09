@@ -37,10 +37,10 @@ class ContactPage extends Component
         RateLimiter::hit($key, 60);
 
         \App\Models\ContactMessage::create([
-            'name'    => $this->name,
-            'email'   => $this->email,
-            'phone'   => $this->phone,
-            'message' => $this->message,
+            'name'    => strip_tags($this->name),
+            'email'   => strip_tags($this->email),
+            'phone'   => $this->phone ? strip_tags($this->phone) : null,
+            'message' => strip_tags($this->message),
         ]);
 
         $this->reset(['name', 'email', 'phone', 'message']);

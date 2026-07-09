@@ -3,6 +3,7 @@
 namespace App\Livewire\Pages;
 
 use App\Mail\ResetPasswordOtpMail;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -39,6 +40,15 @@ class VerifyResetOtp extends Component
 
     public function verifyOtp()
     {
+        $lockoutKey = 'otp_attempts:' . $this->email;
+
+        if (Cache::has($lockoutKey . '_lockout')) {
+            $seconds = Cache::get($lockoutKey . '_lockout') - now()->timestamp;
+            $minutes = ceil($seconds / 60);
+            $this->addError('otp', "Too many failed attempts. Please wait {$minutes} minutes before trying again.");
+            return;
+        }
+
         $this->validate([
             'otp' => 'required|string|size:6',
         ]);
@@ -49,7 +59,15 @@ class VerifyResetOtp extends Component
             ->first();
 
         if (!$record) {
-            $this->addError('otp', 'Invalid OTP. Please try again.');
+            $attempts = Cache::get($lockoutKey, 0) + 1;
+            Cache::put($lockoutKey, $attempts, now()->addMinutes(15));
+
+            if ($attempts >= 5) {
+                Cache::put($lockoutKey . '_lockout', now()->addMinutes(15)->timestamp, now()->addMinutes(15));
+                $this->addError('otp', 'Too many failed attempts. Please wait 15 minutes before trying again.');
+            } else {
+                $this->addError('otp', 'Invalid OTP. Please try again.');
+            }
             return;
         }
 
@@ -57,6 +75,9 @@ class VerifyResetOtp extends Component
             $this->addError('otp', 'OTP has expired. Please request a new one.');
             return;
         }
+
+        Cache::forget($lockoutKey);
+        Cache::forget($lockoutKey . '_lockout');
 
         $this->step = 'reset';
         $this->otp = '';
@@ -113,7 +134,7 @@ class VerifyResetOtp extends Component
             DB::table('password_reset_otps')->insert([
                 'email'      => $this->email,
                 'otp'        => $otp,
-                'expires_at' => now()->addMinutes(10),
+                'expires_at' => now()->addMinutes(3),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

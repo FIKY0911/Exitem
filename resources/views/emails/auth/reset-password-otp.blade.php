@@ -9,7 +9,7 @@ You requested to reset your password. Use the OTP below or click the button to v
     <span style="font-size: 32px; font-weight: 800; letter-spacing: 8px; color: #DB4444;">{{ $otp }}</span>
 </div>
 
-This OTP will expire in **10 minutes**.
+This OTP will expire in **3 minutes**.
 
 <x-mail::button :url="$verificationUrl">
 Verify OTP

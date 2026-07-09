@@ -6,6 +6,7 @@ use App\Mail\ResetPasswordOtpMail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Component;
 
 class ForgotPassword extends Component
@@ -18,6 +19,15 @@ class ForgotPassword extends Component
             'email' => 'required|email|exists:users,email',
         ]);
 
+        $key = 'send-otp:' . $this->email;
+
+        if (RateLimiter::tooManyAttempts($key, 3)) {
+            $this->addError('email', 'Too many OTP requests. Please try again later.');
+            return;
+        }
+
+        RateLimiter::hit($key, 600);
+
         $user = DB::table('users')->where('email', $this->email)->first();
 
         $otp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
@@ -27,7 +37,7 @@ class ForgotPassword extends Component
         DB::table('password_reset_otps')->insert([
             'email' => $this->email,
             'otp' => $otp,
-            'expires_at' => now()->addMinutes(10),
+            'expires_at' => now()->addMinutes(3),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
