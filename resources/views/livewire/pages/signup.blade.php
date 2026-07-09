@@ -2,7 +2,7 @@
     <livewire:components.navbar :dark="false" />
 
     <!-- Auth Page dengan Tailwind -->
-    <main class="bg-transparent bg-cover bg-center bg-no-repeat text-white min-h-screen flex items-center justify-center font-['Poppins']" style="background-image: url('{{ asset('images/image-auth.webp') }}');">
+    <main class="bg-transparent bg-cover bg-center bg-no-repeat text-white min-h-screen flex items-center justify-center font-['Poppins']" style="background-image: url('{{ asset('image-auth.ico') }}');">
         <!-- Auth Container -->
         <div class="bg-black/45 backdrop-blur-sm rounded-[20px] p-14 w-full max-w-[450px] shadow-[0_10px_28px_rgba(0,0,0,0.25)]">
             <h1 class="text-[34px] tracking-wide mb-8 text-center font-semibold">Sign Up</h1>
